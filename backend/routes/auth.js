@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -15,10 +16,11 @@ router.post("/login", async (req, res) => {
   const user = await prisma.user.findUnique({
     where: { username },
   });
-  req.session.userId = user.id;
+
   if (!user) {
     return res.status(400).json({ error: "Invalid username or password." });
   }
+  req.session.userId = user.id;
 
   const isValidPassword = await bcrypt.compare(password, user.password);
   if (!isValidPassword) {
@@ -28,9 +30,11 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/me", async (req, res) => {
+router.get("/me", async (req, res) => {
   if (!req.session.userId) {
+    console.log("not logged in");
     return res.status(401).json({ message: "Not logged in" });
+
   }
 
   try {
@@ -62,15 +66,17 @@ router.post("/signup", async (req, res) => {
   const existingUser = await prisma.user.findUnique({
     where: { username },
   });
+
+
   if (existingUser) {
     return res.status(400).json({ error: "Usernmae already taken" });
   }
 
-  const bcrypt = require("bcrypt");
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await prisma.user.create({
     data: { username, password: hashedPassword },
   });
+  req.session.userId = newUser.id;
   res.status(201).json({ message: "SignUp sucessful" });
 });
 
