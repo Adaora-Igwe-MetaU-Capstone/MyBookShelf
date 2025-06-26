@@ -10,24 +10,26 @@ import { useUser } from "./contexts/UserContext"
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom"
 function App() {
   const { user, setUser } = useUser()
-
+  const [currUser, setCurrUser] = useState("")
   useEffect(() => {
     fetch("http://localhost:3000/me", { credentials: "include" })
       .then((response) => response.json())
       .then((data) => {
         if (data.id) {
           setUser(data); // Persist login state
+          // setCurrUser(data.username)
         }
         console.log(data)
+        console.log(user)
       });
   }, []);
   return (
     <BrowserRouter>
-      <Routes>
+      <Routes >
         <Route path="/" element={<Navigate to="/login"/>} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home user={user}/>} />
+        <Route path="/home" element={<Home currUser={currUser}/>} />
         </Routes>
     </BrowserRouter>
   )

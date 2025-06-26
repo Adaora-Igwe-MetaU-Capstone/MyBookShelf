@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import Search from "./Search"
 import BookList from "./BookList";
 import BookModal from "./BookModal";
+import { useUser } from './contexts/UserContext';
 function Home(props) {
     const [searchInput, setSearchInput] = useState("")
     const [searchResults, setSearchResults] = useState([])
@@ -10,11 +11,11 @@ function Home(props) {
     const [isClicked, setIsClicked] = useState(false)
     const [modalBook, setModalBook] = useState({})
     const ApiKey = import.meta.env.VITE_API_KEY;
+    const {user, setUser} = useUser()
     function handleFormChange(e) {
         setSearchInput(() => e.target.value)
         console.log(searchInput)
     }
-
     async function fetchPopularBooks() {
         const url = `https://www.googleapis.com/books/v1/volumes?q=subject:fiction&orderBy=newest&maxResults=40&key=${ApiKey}`
         const response = await fetch(url)
@@ -50,7 +51,7 @@ function Home(props) {
 
     return (
         <div>
-            <h2>Welcome, {props.user.username}</h2>
+            <h2>Welcome, {user?.username || "Guest"}</h2>
             <Search
                 handleFormChange={handleFormChange}
                 handleSearch={handleSearch}
