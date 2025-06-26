@@ -4,7 +4,8 @@ const app = express();
 const PORT = 3000;
 const session = require("express-session");
 const authRoutes = require("./routes/auth");
-
+const bookRoutes = require("./routes/books");
+require("dotenv").config();
 app.use(cors({origin:"http://localhost:5173", credentials:true}));
 app.use(express.json());
 app.use(
@@ -16,7 +17,7 @@ app.use(
   })
 );
 app.use("/", authRoutes);
-// app.use("/", authRoutes);
+app.use("/", bookRoutes);
 
 app.listen(PORT, () => {
   console.log(`Running on port http://localhost:${PORT}`);

@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+
+
 // Login
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
