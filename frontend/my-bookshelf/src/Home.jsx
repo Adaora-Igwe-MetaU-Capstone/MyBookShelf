@@ -17,22 +17,22 @@ function Home(props) {
         console.log(searchInput)
     }
     async function fetchPopularBooks() {
-        const url = `https://www.googleapis.com/books/v1/volumes?q=subject:fiction&orderBy=newest&maxResults=40&key=${ApiKey}`
+        const url = `http://localhost:3000/popular`
         const response = await fetch(url)
         const data = await response.json()
-        console.log(data.items)
-        setPopularBooks(data.items)
+        console.log(data)
+        setPopularBooks(data)
 
     }
     useEffect(() => {
         fetchPopularBooks()
     }, [])
     async function fetchBookSearch() {
-        const url = `https://www.googleapis.com/books/v1/volumes?q=${searchInput}&maxResults=30&key=${ApiKey}`
+        const url = `http://localhost:3000/search?q=${searchInput}`
         const response = await fetch(url);
         const data = await response.json();
         console.log(data.items)
-        setSearchResults(data.items)
+        setSearchResults(data)
 
 
     }
