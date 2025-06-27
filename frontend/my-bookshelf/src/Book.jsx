@@ -8,7 +8,7 @@ function Book(props){
         description: props.bookDescription,
         amazonLink :  `https://www.amazon.com/s?k=${encodeURIComponent(props.bookTitle + ' ' + props.bookAuthor)}`,
         barnesandNobleLink : `https://www.barnesandnoble.com/s/${encodeURIComponent(props.bookTitle + ' ' + props.bookAuthor)}`,
-
+        googleId: props.googleId
     }
 
     const modalDisplay = () => {

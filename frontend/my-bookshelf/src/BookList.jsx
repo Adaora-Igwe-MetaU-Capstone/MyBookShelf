@@ -11,6 +11,7 @@ function BookList(props) {
             setModalBook = {props.setModalBook}
             isClicked = {props.isClicked}
             setIsClicked = {props.setIsClicked}
+            googleId = {book.id}
             bookCover = {info.imageLinks?.thumbnail}
             bookTitle = {info.title}
             bookAuthor = {info.authors?.join(", ")}

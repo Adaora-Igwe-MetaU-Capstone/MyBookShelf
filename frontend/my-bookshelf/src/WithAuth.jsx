@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "./contexts/UserContext";
 
-const WithAuth = ({ children }) => {
+const WithAuth = (WrappedComponent) => {
     return function ProtectedComponent(props){
         const { user } = useUser();
         const navigate = useNavigate();

@@ -26,6 +26,7 @@ model Book {
   title String
   author String
   cover String?
+  description String?
   bookshelf Bookshelf @relation("BooksOnShelf", fields: [bookshelfId], references: [id])
   bookshelfId Int
 }
