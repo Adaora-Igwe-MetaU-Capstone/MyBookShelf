@@ -18,6 +18,8 @@ app.use(
 );
 app.use("/", authRoutes);
 app.use("/", bookRoutes);
+app.use("/", bookShelfRoutes)
+
 
 app.listen(PORT, () => {
   console.log(`Running on port http://localhost:${PORT}`);
