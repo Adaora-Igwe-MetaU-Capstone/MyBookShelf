@@ -76,7 +76,16 @@ router.post("/signup", async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await prisma.user.create({
-    data: { username, password: hashedPassword },
+    data: { username,
+       password: hashedPassword,
+      bookshelves:{
+        create:[
+          {name:"CurrentlyReading"},
+          {name:"WanttoRead"},
+          {name:"Read"},
+        ]
+      }
+     },
   });
   req.session.userId = newUser.id;
   res.status(201).json({ message: "SignUp sucessful" });

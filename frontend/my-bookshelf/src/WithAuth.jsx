@@ -18,4 +18,4 @@ const WithAuth = ({ children }) => {
         return <WrappedComponent {...props} />;
     }
 }
-ex
+export default WithAuth;

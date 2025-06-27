@@ -10,6 +10,7 @@ import Home from './Home' // You need to import Home too
 function App() {
   const { user, setUser } = useUser()
   const [currUser, setCurrUser] = useState("")
+  const ProtectedHome = WithAuth(Home);
 
 
   useEffect(() => {
@@ -32,7 +33,7 @@ function App() {
         <Route path="/" element={<Navigate to="/login"/>} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home currUser={currUser}/>} />
+        <Route path="/home" element={<ProtectedHome currUser={currUser}/>} />
 
       </Routes>
 
