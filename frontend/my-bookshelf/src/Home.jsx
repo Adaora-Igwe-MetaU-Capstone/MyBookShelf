@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import Search from "./Search"
 import BookList from "./BookList";
 import BookModal from "./BookModal";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
 import { useUser } from './contexts/UserContext';
 function Home(props) {
     const [searchInput, setSearchInput] = useState("")
@@ -10,9 +12,14 @@ function Home(props) {
     const [popularBooks, setPopularBooks] = useState([])
     const [isClicked, setIsClicked] = useState(false)
     const [modalBook, setModalBook] = useState({})
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const ApiKey = import.meta.env.VITE_API_KEY;
-    const {user, setUser} = useUser()
+    const { user, setUser } = useUser()
 
+    const toggleSidebar = () => {
+        console.log("clicked")
+        setIsSidebarOpen(prev => !prev)
+    }
     function handleFormChange(e) {
         setSearchInput(() => e.target.value)
         console.log(searchInput)
@@ -23,7 +30,6 @@ function Home(props) {
         const data = await response.json()
         console.log(data)
         setPopularBooks(data)
-
     }
     useEffect(() => {
         fetchPopularBooks()
@@ -40,7 +46,6 @@ function Home(props) {
     function handleSearch(e) {
         e.preventDefault()
         fetchBookSearch()
-        // setSearchInput("")
     }
     function clearSearch(e) {
         e.preventDefault()
@@ -49,25 +54,26 @@ function Home(props) {
         fetchPopularBooks()
 
     }
-
     return (
         <div>
-            <h2>Welcome, {user?.username || "Guest"}</h2>
-            <Search
-                handleFormChange={handleFormChange}
-                handleSearch={handleSearch}
-                fetchBookSearch={fetchBookSearch}
-                clearSearch={clearSearch}
-                searchInput={searchInput}></Search>
-            <BookList isClicked={isClicked}
-                setIsClicked={setIsClicked} popularBooks={popularBooks}
-                searchResults={searchResults}
-                modalBook={modalBook}
-                setModalBook={setModalBook}></BookList>
+            <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}></Sidebar>
+            <div id="main" className={isSidebarOpen === true ? "main-sidebar-open" : "main"}><Header toggleSidebar={toggleSidebar} ></Header>
 
-                {isClicked === true && <BookModal setIsClicked={setIsClicked} modalBook={modalBook}/>}
+                <Search
+                    handleFormChange={handleFormChange}
+                    handleSearch={handleSearch}
+                    fetchBookSearch={fetchBookSearch}
+                    clearSearch={clearSearch}
+                    searchInput={searchInput}></Search>
+                <BookList isClicked={isClicked}
+                    setIsClicked={setIsClicked} popularBooks={popularBooks}
+                    searchResults={searchResults}
+                    modalBook={modalBook}
+                    setModalBook={setModalBook}></BookList>
+            </div>
+
+            {isClicked === true && <BookModal setIsClicked={setIsClicked} modalBook={modalBook} />}
         </div>
     )
-
 }
 export default Home;

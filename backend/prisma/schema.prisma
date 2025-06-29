@@ -29,6 +29,7 @@ model Book {
   description String?
   bookshelf Bookshelf @relation("BooksOnShelf", fields: [bookshelfId], references: [id])
   bookshelfId Int
+  googleId String
 }
 
 enum Bookshelfname {

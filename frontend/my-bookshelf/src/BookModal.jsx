@@ -5,44 +5,41 @@ function BookModal(props) {
     const closeModal = () => {
         props.setIsClicked(false)
     }
-    const fetchBookshelves = async() => {
-        try{const res = await fetch ("http://localhost:3000/bookshelf",{
-            credentials: "include",
-        });
-        const data = await res.json();
-        console.log(data)
-        setBookshelves(data);}catch(err){
-            console.error("Error fetching bookshelves",err)
+    const fetchBookshelves = async () => {
+        try {
+            const res = await fetch("http://localhost:3000/bookshelf", {
+                credentials: "include",
+            });
+            const data = await res.json();
+            console.log(data)
+            setBookshelves(data);
+        } catch (err) {
+            console.error("Error fetching bookshelves", err)
         }
     }
     useEffect(() => {
         fetchBookshelves()
-
-
-
-
-    },[])
-    useEffect(() =>{
+    }, [])
+    useEffect(() => {
         const saved = localStorage.getItem(`shelf for ${props.modalBook.title}`)
-        if(saved){
-            setSelectedBookshelf(saved)}
+        if (saved) {
+            setSelectedBookshelf(saved)
+        }
 
-    },[props.modalBook.googleId])
+    }, [props.modalBook.googleId])
 
-    const addToBookshelf = async(e)=>{
+    const addToBookshelf = async (e) => {
         const selected = e.target.value
-        if(!selected){
+        if (!selected) {
             return alert("Please select a bookshelf")
         }
         setSelectedBookshelf(selected)
         localStorage.setItem(`shelf for ${props.modalBook.title}`, selected)
-
-
-        try{
+        try {
             console.log(props.modalBook)
-            const res = await fetch("http://localhost:3000/bookshelf/add",{
+            const res = await fetch("http://localhost:3000/bookshelf/add", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 credentials: "include",
                 body: JSON.stringify({
                     title: props.modalBook.title,
@@ -54,16 +51,13 @@ function BookModal(props) {
                 }),
             });
             const data = await res.json();
-            console.log( "book added",data)
-
-            // closeModal()
+            console.log("book added", props.modalBook.googleId)
             alert("Book added to bookshelf")
-        }catch(err){
-            console.error("Error adding book to bookshelf",err)
+        } catch (err) {
+            console.error("Error adding book to bookshelf", err)
             alert("Error adding book to bookshelf")
         }
     }
-
     return (
         <div className="modal-container">
             <div className="modal">
@@ -77,19 +71,15 @@ function BookModal(props) {
                     <a href={props.modalBook.barnesandNobleLink}>Buy on Barnes & Noble</a>
                     <a href={props.modalBook.amazonLink}>Buy on Amazon</a>
                 </div>
-
                 <div><h3>{props.modalBook.description}</h3></div>
                 <select value={selectedBookshelf} onChange={addToBookshelf} defaultValue="">
-            <option value="">Select a  shelf</option>
-            {bookshelves.map((bookshelf)=>(
-                <option key={bookshelf.id} value={bookshelf.id}>{bookshelf.name}</option>
-            ))}
+                    <option value="">Select a  shelf</option>
+                    {bookshelves.map((bookshelf) => (
+                        <option key={bookshelf.id} value={bookshelf.id}>{bookshelf.name}</option>
+                    ))}
                 </select>
-
-
             </div>
         </div>
-
     )
 }
 export default BookModal

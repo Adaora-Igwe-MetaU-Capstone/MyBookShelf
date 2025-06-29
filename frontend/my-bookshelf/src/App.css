@@ -1,8 +1,16 @@
 #root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+.main{
+  transition: margin-left 0.5s ease;
+  padding: 20px;
+  margin-left: 0;
+}
+.main-sidebar-open{
+  margin-left: 250px;
 }
 
 .logo {
@@ -30,6 +38,7 @@ justify-content: space-around;
   display: flex;
   justify-content: center;
 }
+
 .modal {
   background-color: #344c3d;
   margin: auto;
@@ -49,6 +58,7 @@ justify-content: space-around;
 #closeIcon{
   font-size: 30px;
   margin-right: 50px;
+  cursor: pointer;
 
 }
 .book-details{
@@ -72,6 +82,8 @@ justify-content: space-around;
   background-color: rgba(0, 0, 0, 0.8);
  opacity: 1;
  }
+
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

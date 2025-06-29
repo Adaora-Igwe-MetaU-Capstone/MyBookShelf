@@ -1,0 +1,21 @@
+.sidebar{
+    height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  background-color: rgb(233, 233, 233);
+  overflow-x: hidden;
+  transition: 0.3s ease;
+  padding-top: 60px;
+}
+.sidebar.open{
+   width: 250px;
+}
+#closeIcon{
+    font-size: 30px;
+    margin-right: 50px;
+    cursor: pointer;
+
+  }

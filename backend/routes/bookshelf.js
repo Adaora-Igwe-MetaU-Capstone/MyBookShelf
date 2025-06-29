@@ -20,10 +20,10 @@ router.get("/bookshelf", async (req, res)=>{
 router.post("/bookshelf/add", async (req, res) =>{
     console.log("men", req.session)
     const userId = req.session.userId;
-    const {bookshelfId, description, title, author, cover} = req.body;
+    const {bookshelfId, description, title, author, cover, googleId} = req.body;
 
     const bookshelf = await prisma.bookshelf.findFirst({
-        where: {id: Number(bookshelfId), userId }
+        where: {id: bookshelfId, userId }
     })
     if(!bookshelf){
         return res.status(403).json({error: "Unauthorized Access"})
@@ -31,7 +31,7 @@ router.post("/bookshelf/add", async (req, res) =>{
 
     const newBook = await prisma.book.create({
         data: {
-            title, author, cover, description,  bookshelfId
+            title, author, cover, description, googleId, bookshelfId
         }
     })
     res.status(201).json(newBook);

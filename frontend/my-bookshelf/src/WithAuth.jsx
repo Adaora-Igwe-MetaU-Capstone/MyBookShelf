@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "./contexts/UserContext";
-
 const WithAuth = (WrappedComponent) => {
-    return function ProtectedComponent(props){
+    return function ProtectedComponent(props) {
         const { user } = useUser();
         const navigate = useNavigate();
         useEffect(() => {
@@ -14,7 +13,6 @@ const WithAuth = (WrappedComponent) => {
         if (!user) {
             return <p>Loading...</p>; // Prevents flickering before redirection
         }
-
         return <WrappedComponent {...props} />;
     }
 }

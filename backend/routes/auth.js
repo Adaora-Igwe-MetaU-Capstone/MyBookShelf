@@ -22,16 +22,19 @@ router.post("/login", async (req, res) => {
   if (!user) {
     return res.status(400).json({ error: "Invalid username or password." });
   }
-  req.session.userId = user.id;
+
 
   const isValidPassword = await bcrypt.compare(password, user.password);
   if (!isValidPassword) {
     return res.status(400).json({ error: "Invalid username or password." });
   } else {
-    res.json({ message: "Login successful!" });
+    res.json({ message: "Login successful!" , user: {id:user.id, username:user.username} });
+    req.session.userId = user.id;
+    req.session.username = user.username;
   }
 });
 
+// Get User
 router.get("/me", async (req, res) => {
   if (!req.session.userId) {
     console.log("not logged in");
@@ -88,7 +91,7 @@ router.post("/signup", async (req, res) => {
      },
   });
   req.session.userId = newUser.id;
-  res.status(201).json({ message: "SignUp sucessful" });
+  res.status(201).json({ message: "SignUp sucessful",  user: {id:newUser.id, username:newUser.username}  });
 });
 
 // Logout
