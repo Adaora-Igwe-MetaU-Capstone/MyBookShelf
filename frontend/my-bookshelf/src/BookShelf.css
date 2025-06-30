@@ -1,0 +1,6 @@
+.book-list{
+    display: flex;
+}
+.book{
+    margin-right: 10px;
+}
