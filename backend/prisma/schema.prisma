@@ -24,12 +24,12 @@ model User {
 model Book {
   id Int @id @default(autoincrement())
   title String
-  author String
+  author String?
   cover String?
   description String?
   bookshelf Bookshelf @relation("BooksOnShelf", fields: [bookshelfId], references: [id])
   bookshelfId Int
-  googleId String
+  googleId String @unique
 }
 
 enum Bookshelfname {

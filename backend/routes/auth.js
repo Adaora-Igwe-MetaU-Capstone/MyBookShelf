@@ -9,6 +9,7 @@ const prisma = new PrismaClient();
 
 // Login
 router.post("/login", async (req, res) => {
+  console.log(req.body)
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -28,9 +29,10 @@ router.post("/login", async (req, res) => {
   if (!isValidPassword) {
     return res.status(400).json({ error: "Invalid username or password." });
   } else {
-    res.json({ message: "Login successful!" , user: {id:user.id, username:user.username} });
     req.session.userId = user.id;
     req.session.username = user.username;
+    res.json({ message: "Login successful!" , user: {id:user.id, username:user.username} });
+
   }
 });
 
@@ -57,8 +59,7 @@ router.get("/me", async (req, res) => {
 // SignUp Route
 router.post("/signup", async (req, res) => {
   const { username, password } = req.body;
-
-  if (!username || !password) {
+if (!username || !password) {
     return res.status(400).json({ error: "You need a username and password" });
   }
 
