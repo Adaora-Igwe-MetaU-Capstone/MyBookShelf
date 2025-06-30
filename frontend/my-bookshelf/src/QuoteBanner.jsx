@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import quotes from "./quotes.json";
-
+import "./QuoteBanner.css";
 function QuoteBanner(){
     const [quote, setQuote] = useState("");
     const [author, setAuthor] = useState("");
