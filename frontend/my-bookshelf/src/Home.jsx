@@ -5,6 +5,7 @@ import BookList from "./BookList";
 import BookModal from "./BookModal";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import QuoteBanner from "./QuoteBanner";
 import { useUser } from './contexts/UserContext';
 function Home(props) {
     const [searchInput, setSearchInput] = useState("")
@@ -58,7 +59,7 @@ function Home(props) {
         <div>
             <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}></Sidebar>
             <div id="main" className={isSidebarOpen === true ? "main-sidebar-open" : "main"}><Header toggleSidebar={toggleSidebar} ></Header>
-
+                <QuoteBanner></QuoteBanner>
                 <Search
                     handleFormChange={handleFormChange}
                     handleSearch={handleSearch}
