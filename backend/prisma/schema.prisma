@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  
+
 }
 
 datasource db {
@@ -18,4 +18,29 @@ model User {
   id       Int    @id @default(autoincrement())
   username String @unique
   password String
+  bookshelves Bookshelf[]
+}
+
+model Book {
+  id Int @id @default(autoincrement())
+  title String
+  author String?
+  cover String?
+  description String?
+  bookshelf Bookshelf @relation("BooksOnShelf", fields: [bookshelfId], references: [id])
+  bookshelfId Int
+  googleId String @unique
+}
+
+enum Bookshelfname {
+  CurrentlyReading
+  WanttoRead
+  Read
+}
+model Bookshelf{
+  id Int @id @default(autoincrement())
+  name Bookshelfname
+  user User  @relation(fields: [userId], references: [id])
+  userId Int
+  books Book[] @relation("BooksOnShelf")
 }
