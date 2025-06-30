@@ -30,9 +30,6 @@ router.post("/bookshelf/add", async (req, res) =>{
     console.log("men", req.session)
     const userId = req.session.userId;
     const {bookshelfId, description, title, author, cover, googleId} = req.body;
-    const bookShelfs = await prisma.bookshelf.findMany({where: {id:  userId , name: bookshelfId,}
-    })
-    console.log(bookShelfs)
     const bookshelf = await prisma.bookshelf.findFirst({
         where: {userId:  userId , name: bookshelfId,}
     })

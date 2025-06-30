@@ -1,15 +1,16 @@
 #root {
-  /* max-width: 1280px; */
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
-.main{
+
+.main {
   transition: margin-left 0.5s ease;
   padding: 20px;
   margin-left: 0;
 }
-.main-sidebar-open{
+
+.main-sidebar-open {
   margin-left: 250px;
 }
 
@@ -19,22 +20,28 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
-.book-list{
-display: flex;
-flex-direction: row;
-flex-wrap: wrap;
-justify-content: space-around;
+
+.book-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
-.book{
+
+.book {
   width: 250px;
+  cursor: pointer;
 }
-.search-bar{
+
+.search-bar {
   display: flex;
   justify-content: center;
 }
@@ -55,21 +62,26 @@ justify-content: space-around;
   overflow-y: auto;
 
 }
-#closeIcon{
+
+#closeIcon {
   font-size: 30px;
   margin-right: 50px;
   cursor: pointer;
 
 }
-.book-details{
+
+.book-details {
   display: flex;
   flex-direction: column;
   margin-left: 30px;
 }
-.modal-header{display: flex;
-/* /* justify-content: space-around; */
+
+.modal-header {
+  display: flex;
+  /* /* justify-content: space-around; */
 }
-.modal-container{
+
+.modal-container {
   position: fixed;
   left: 0;
   top: 0;
@@ -80,14 +92,15 @@ justify-content: space-around;
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.8);
- opacity: 1;
- }
+  opacity: 1;
+}
 
 
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

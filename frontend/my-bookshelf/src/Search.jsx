@@ -9,5 +9,4 @@ function Search(props) {
         </div>
     )
 }
-
 export default Search;

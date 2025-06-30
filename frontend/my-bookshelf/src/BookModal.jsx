@@ -8,18 +8,17 @@ function BookModal(props) {
     const closeModal = () => {
         props.setIsClicked(false)
     }
-    const fetchShelfOption = async ()=>{
-        try{
+    const fetchShelfOption = async () => {
+        try {
             const res = await fetch("http://localhost:3000/shelves", {
                 credentials: "include",
-        })
-        const data = await res.json();
-        setShelfOptions(data)
-
-
-    }catch(err){
-        console.error("Error fetching bookshelves", err)
-    }}
+            })
+            const data = await res.json();
+            setShelfOptions(data)
+        } catch (err) {
+            console.error("Error fetching bookshelves", err)
+        }
+    }
     const fetchBookshelves = async () => {
         try {
             const res = await fetch("http://localhost:3000/bookshelf", {
@@ -35,7 +34,6 @@ function BookModal(props) {
     useEffect(() => {
         fetchBookshelves()
         fetchShelfOption()
-
     }, [])
     useEffect(() => {
         console.log(user)
@@ -43,7 +41,6 @@ function BookModal(props) {
         if (saved) {
             setSelectedBookshelf(saved)
         }
-
     }, [props.modalBook.googleId])
     const addToBookshelf = async (e) => {
         const selected = e.target.value
@@ -65,7 +62,7 @@ function BookModal(props) {
                     cover: props.modalBook.cover,
                     description: props.modalBook.description,
                     googleId: props.modalBook.googleId,
-                    bookshelfId:selected
+                    bookshelfId: selected
                 }),
             });
             const data = await res.json();

@@ -19,6 +19,18 @@ model User {
   username String @unique
   password String
   bookshelves Bookshelf[]
+  reflections Reflection[]
+  goals Goal[]
+}
+
+model Goal {
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  createdAt DateTime @default(now())
+  target Int
+  year Int
+  @@unique([userId, year])
 }
 
 model Book {
@@ -43,4 +55,14 @@ model Bookshelf{
   user User  @relation(fields: [userId], references: [id])
   userId Int
   books Book[] @relation("BooksOnShelf")
+}
+
+model Reflection{
+  id Int @id @default(autoincrement())
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  bookId Int
+  content String
+  createdAt DateTime @default(now())
+
 }
