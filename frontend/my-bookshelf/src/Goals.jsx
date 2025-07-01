@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import GoalForm from "./GoalForm"
+import GoalCircle from "./GoalCircle"
 function Goals() {
     const [goal, setGoal] = useState(null)
     async function fetchGoal() {
@@ -16,7 +17,8 @@ function Goals() {
     }, [])
     return (
         <>
-            {goal ? (<h1>hii</h1>) : (<GoalForm fetchGoal={fetchGoal} />)}
+            {goal !== null ? <GoalCircle goal={goal} /> : (<GoalForm fetchGoal={fetchGoal} />)}
+
         </>
     )
 

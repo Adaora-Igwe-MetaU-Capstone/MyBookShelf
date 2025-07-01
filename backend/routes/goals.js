@@ -52,4 +52,29 @@ router.get('/goal', async (req, res) => {
     }
 })
 
+//get progress on goal
+router.get('/progress', async (req, res) => {
+    const currentYear = new Date().getFullYear();
+    const userId = req.session.userId;
+    const read = await prisma.bookshelf.findFirst({
+        where: {
+            name: 'Read',
+            userId: userId
+        }
+    })
+    console.log(read)
+    const booksRead = await prisma.book.findMany({
+        where: {
+            userId,
+            bookshelfId: read.id,
+            createdAt: {
+                gte: new Date(`${currentYear}-01-01T00:00:00.000Z`)
+            }
+
+        },
+
+    })
+    console.log(booksRead)
+    res.json(booksRead.length)
+})
 module.exports = router

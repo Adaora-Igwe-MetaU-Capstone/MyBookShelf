@@ -21,6 +21,7 @@ model User {
   bookshelves Bookshelf[]
   reflections Reflection[]
   goals Goal[]
+  books Book[]
 }
 
 model Goal {
@@ -39,9 +40,12 @@ model Book {
   author String?
   cover String?
   description String?
+  user User? @relation(fields: [userId], references: [id])
+  userId Int?
   bookshelf Bookshelf @relation("BooksOnShelf", fields: [bookshelfId], references: [id])
   bookshelfId Int
   googleId String @unique
+  createdAt DateTime @default(now())
 }
 
 enum Bookshelfname {
