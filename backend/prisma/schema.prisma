@@ -32,6 +32,7 @@ model Goal {
   target Int
   year Int
   @@unique([userId, year])
+  isPublic Boolean @default(false)
 }
 
 model Book {
@@ -46,6 +47,7 @@ model Book {
   bookshelfId Int
   googleId String @unique
   createdAt DateTime @default(now())
+  reflections Reflection[]
 }
 
 enum Bookshelfname {
@@ -66,7 +68,8 @@ model Reflection{
   userId Int
   user User @relation(fields: [userId], references: [id])
   bookId Int
+  book Book @relation(fields: [bookId], references: [id])
   content String
   createdAt DateTime @default(now())
-
+  @@unique([userId, bookId])
 }

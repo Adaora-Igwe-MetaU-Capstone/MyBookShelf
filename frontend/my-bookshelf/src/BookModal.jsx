@@ -1,10 +1,12 @@
 import { use, useEffect, useState } from "react"
 import { useUser } from "./contexts/UserContext"
+import { useNavigate } from "react-router-dom"
 function BookModal(props) {
     const [bookshelves, setBookshelves] = useState([])
     const [selectedBookshelf, setSelectedBookshelf] = useState("")
     const [shelfOptions, setShelfOptions] = useState([])
     const { user, setUser } = useUser()
+    const navigate = useNavigate()
     const closeModal = () => {
         props.setIsClicked(false)
     }
@@ -86,6 +88,7 @@ function BookModal(props) {
                         <h4>{props.modalBook.author}</h4></div>
                     <a href={props.modalBook.barnesandNobleLink}>Buy on Barnes & Noble</a>
                     <a href={props.modalBook.amazonLink}>Buy on Amazon</a>
+                    <button onClick={() => navigate(`/books/{props.modalBook.googleId}/review`, { state: props.modalBook })}>See Reviews</button>
                 </div>
                 <div><h3>{props.modalBook.description}</h3></div>
                 <select value={selectedBookshelf} onChange={addToBookshelf} defaultValue="">

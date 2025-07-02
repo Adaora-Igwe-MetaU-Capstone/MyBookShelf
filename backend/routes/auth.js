@@ -31,7 +31,7 @@ router.post("/login", async (req, res) => {
   } else {
     req.session.userId = user.id;
     req.session.username = user.username;
-    res.json({ message: "Login successful!" , user: {id:user.id, username:user.username} });
+    res.json({ message: "Login successful!", user: { id: user.id, username: user.username } });
 
   }
 });
@@ -43,7 +43,6 @@ router.get("/me", async (req, res) => {
     return res.status(401).json({ message: "Not logged in" });
 
   }
-
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.session.userId },
@@ -59,40 +58,36 @@ router.get("/me", async (req, res) => {
 // SignUp Route
 router.post("/signup", async (req, res) => {
   const { username, password } = req.body;
-if (!username || !password) {
+  if (!username || !password) {
     return res.status(400).json({ error: "You need a username and password" });
   }
-
   if (password.length < 8) {
     return res
       .status(400)
       .json({ error: "Password has to have at least eight characters" });
   }
-
   const existingUser = await prisma.user.findUnique({
     where: { username },
   });
-
-
   if (existingUser) {
     return res.status(400).json({ error: "Usernmae already taken" });
   }
-
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await prisma.user.create({
-    data: { username,
-       password: hashedPassword,
-      bookshelves:{
-        create:[
-          {name:"CurrentlyReading"},
-          {name:"WanttoRead"},
-          {name:"Read"},
+    data: {
+      username,
+      password: hashedPassword,
+      bookshelves: {
+        create: [
+          { name: "CurrentlyReading" },
+          { name: "WanttoRead" },
+          { name: "Read" },
         ]
       }
-     },
+    },
   });
   req.session.userId = newUser.id;
-  res.status(201).json({ message: "SignUp sucessful",  user: {id:newUser.id, username:newUser.username}  });
+  res.status(201).json({ message: "SignUp sucessful", user: { id: newUser.id, username: newUser.username } });
 });
 
 // Logout

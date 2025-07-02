@@ -8,6 +8,8 @@ import WithAuth from './WithAuth'
 import Home from './Home'
 import BookShelf from './BookShelf'
 import Goals from './Goals'
+import ReflectionPage from './ReflectionPage'
+import BookReviewsPage from './BookReviewsPage'
 function App() {
   const { user, setUser } = useUser()
   const [currUser, setCurrUser] = useState("")
@@ -32,6 +34,8 @@ function App() {
         <Route path="/home" element={<ProtectedHome currUser={currUser} />} />
         <Route path="/mybookshelf" element={<ProtectedBookshelf currUser={currUser} />}></Route>
         <Route path="/goal" element={<Goals />} />
+        <Route path="/books/:id/reflection" element={<ReflectionPage />} />
+        <Route path="/books/:id/review" element={<BookReviewsPage />} />
       </Routes>
     </BrowserRouter>
   )
