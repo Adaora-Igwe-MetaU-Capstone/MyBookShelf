@@ -2,6 +2,7 @@ import { use, useEffect } from "react";
 import { useState } from "react";
 import './BookShelf.css'
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 function BookShelf() {
     const [bookshelves, setBookshelves] = useState([])
     const navigate = useNavigate()
@@ -27,7 +28,7 @@ function BookShelf() {
     }, [])
     return (
         <div>
-            <i onClick={goBackHome} class="fa-solid fa-arrow-left"></i>
+            <i onClick={goBackHome} className="fa-solid fa-arrow-left"></i>
             <h2>MY BOOKS</h2>
             {Object.entries(bookshelves).map(([shelfname, books]) => (
                 <div key={shelfname}>
@@ -37,9 +38,10 @@ function BookShelf() {
                     <div className="book-list">
                         {books.map((book) => (
                             <div className="book" key={book.googleId}>
-                                <img src={book.cover} alt="bookcover" />
+                                <Link state={book} to={'/books/${book.googleId}/reflection'}> <img src={book.cover} alt="bookcover" /></Link>
                                 <h4>{book.title}
                                 </h4>
+
                                 <p>{book.author}</p>
                             </div>
                         ))}

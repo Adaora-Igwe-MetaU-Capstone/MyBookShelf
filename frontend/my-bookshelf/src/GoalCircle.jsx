@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 function GoalCircle(props) {
     const [progress, setProgress] = useState(0);
+
     async function fetchProgress() {
         try {
             const res = await fetch('http://localhost:3000/user-bookshelves', {
@@ -19,6 +20,7 @@ function GoalCircle(props) {
             console.error("Error fetching bookshelves", err)
         }
     }
+
     useEffect(() => {
         fetchProgress()
         console.log(progress, props.goal.target)
