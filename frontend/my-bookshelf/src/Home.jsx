@@ -16,14 +16,12 @@ function Home(props) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const ApiKey = import.meta.env.VITE_API_KEY;
     const { user, setUser } = useUser()
-
     const toggleSidebar = () => {
         console.log("clicked")
         setIsSidebarOpen(prev => !prev)
     }
     function handleFormChange(e) {
         setSearchInput(() => e.target.value)
-        console.log(searchInput)
     }
     async function fetchPopularBooks() {
         const url = `http://localhost:3000/popular`
@@ -41,8 +39,6 @@ function Home(props) {
         const data = await response.json();
         console.log(data.items)
         setSearchResults(data)
-
-
     }
     function handleSearch(e) {
         e.preventDefault()
@@ -53,7 +49,6 @@ function Home(props) {
         setSearchResults([])
         setSearchInput("")
         fetchPopularBooks()
-
     }
     return (
         <div>
@@ -72,7 +67,6 @@ function Home(props) {
                     modalBook={modalBook}
                     setModalBook={setModalBook}></BookList>
             </div>
-
             {isClicked === true && <BookModal setIsClicked={setIsClicked} modalBook={modalBook} />}
         </div>
     )

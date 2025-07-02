@@ -1,21 +1,19 @@
-.quote-container{
+.quote-container {
     background-color: #f4f1ea;
     padding: 24px;
     border-radius: 8px;
     font-family: Georgia, serif;
     text-align: center;
     margin: 16px;
-
-
 }
-.quote{
+
+.quote {
     font-size: 19.2px;
     font-style: italic;
     margin-bottom: 0.5rem;
-
 }
-.author{
+
+.author {
     font-size: 20px;
     color: #555;
-
 }

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from './contexts/UserContext';
 import { Link } from "react-router-dom";
-
 function Login() {
     const [formData, setFormData] = useState({ username: "", password: "" })
     const [message, setMessage] = useState("")
@@ -14,7 +13,6 @@ function Login() {
     }
     async function handleSubmit(e) {
         e.preventDefault()
-        console.log("submitted", formData)
         try {
             const response = await fetch("http://localhost:3000/login",
                 {

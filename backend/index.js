@@ -6,6 +6,7 @@ const session = require("express-session");
 const authRoutes = require("./routes/auth");
 const bookRoutes = require("./routes/books");
 const bookShelfRoutes = require("./routes/bookshelf");
+const goalRoutes = require("./routes/goals");
 require("dotenv").config();
 app.use(express.json());
 app.use(
@@ -16,11 +17,14 @@ app.use(
     cookie: { secure: false, httpOnly: true, maxAge: 1000 * 60 * 60 }, // 1-hour session
   })
 );
-app.use(cors({origin:"http://localhost:5173",
-  credentials:true}));
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 app.use("/", authRoutes);
 app.use("/", bookRoutes);
 app.use("/", bookShelfRoutes)
+app.use("/", goalRoutes)
 
 
 app.listen(PORT, () => {

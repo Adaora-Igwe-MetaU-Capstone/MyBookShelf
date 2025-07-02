@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom"
 import WithAuth from './WithAuth'
 import Home from './Home'
 import BookShelf from './BookShelf'
+import Goals from './Goals'
 function App() {
   const { user, setUser } = useUser()
   const [currUser, setCurrUser] = useState("")
@@ -18,7 +19,6 @@ function App() {
       .then((data) => {
         if (data.id) {
           setUser(data); // Persist login state
-
           setCurrUser(data); // Set current user state
         }
       });
@@ -30,7 +30,8 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<ProtectedHome currUser={currUser} />} />
-        <Route path="/mybookshelf" element={<ProtectedBookshelf currUser={currUser}/>}></Route>
+        <Route path="/mybookshelf" element={<ProtectedBookshelf currUser={currUser} />}></Route>
+        <Route path="/goal" element={<Goals />} />
       </Routes>
     </BrowserRouter>
   )

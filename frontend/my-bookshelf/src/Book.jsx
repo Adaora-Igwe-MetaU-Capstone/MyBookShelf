@@ -8,7 +8,6 @@ function Book(props) {
         barnesandNobleLink: `https://www.barnesandnoble.com/s/${encodeURIComponent(props.bookTitle + ' ' + props.bookAuthor)}`,
         googleId: props.googleId
     }
-
     const modalDisplay = () => {
         props.setIsClicked(true)
         props.setModalBook(modalBookObject)
@@ -19,8 +18,6 @@ function Book(props) {
             <img src={props.bookCover} alt="" />
             <h2>{props.bookTitle}</h2>
             <p>{props.bookAuthor}</p>
-
-
         </div>
     )
 }
