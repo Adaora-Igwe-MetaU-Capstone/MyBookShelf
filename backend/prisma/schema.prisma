@@ -22,6 +22,7 @@ model User {
   reflections Reflection[]
   goals Goal[]
   books Book[]
+  reviews Review[]
 }
 
 model Goal {
@@ -48,6 +49,7 @@ model Book {
   googleId String @unique
   createdAt DateTime @default(now())
   reflections Reflection[]
+  reviews Review[]
 }
 
 enum Bookshelfname {
@@ -72,4 +74,14 @@ model Reflection{
   content String
   createdAt DateTime @default(now())
   @@unique([userId, bookId])
+}
+
+model Review{
+  id Int @id @default(autoincrement())
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  bookId Int
+  book Book @relation(fields: [bookId], references: [id])
+  content String
+  rating Int
 }
