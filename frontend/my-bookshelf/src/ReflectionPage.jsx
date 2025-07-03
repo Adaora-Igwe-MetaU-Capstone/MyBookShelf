@@ -7,7 +7,7 @@ function ReflectionPage() {
     const [reflection, setReflection] = useState("")
     console.log(bookData)
     const fetchReflection = async () => {
-        const res = await fetch(`http://localhost:3000/reflection/${bookData.id}`, {
+        const res = await fetch(`http://localhost:3000/reflection/${bookData.googleId}`, {
             method: 'GET',
             credentials: 'include',
         }
@@ -27,8 +27,12 @@ function ReflectionPage() {
                 },
                 credentials: 'include',
                 body: JSON.stringify({
-                    bookId: bookData.id,
+                    googleId: bookData.googleId,
                     content: reflection,
+                    title: bookData.title,
+                    author: bookData.author,
+                    cover: bookData.cover,
+                    description: bookData.description,
                 })
             })
             if (res.ok) {
@@ -43,12 +47,15 @@ function ReflectionPage() {
     }
     useEffect(() => {
         fetchReflection()
-    }, [bookData.id])
+    }, [bookData.googleId])
     return (
         <>
             <div>
                 <img src={bookData.cover} alt="bookcover" />
-                <h3>{bookData.title}</h3>
+                <h3>{bookData.title} - {bookData.author}</h3>
+                <p>{bookData.description}</p>
+                <a href={bookData.barnesandNobleLink}>Buy on Barnes & Noble</a>
+                <a href={bookData.amazonLink}>Buy on Amazon</a>
             </div>
             <div>
 

@@ -35,7 +35,6 @@ function App() {
         <Route path="/mybookshelf" element={<ProtectedBookshelf currUser={currUser} />}></Route>
         <Route path="/goal" element={<Goals />} />
         <Route path="/books/:id/reflection" element={<ReflectionPage />} />
-        <Route path="/books/:id/review" element={<BookReviewsPage />} />
       </Routes>
     </BrowserRouter>
   )

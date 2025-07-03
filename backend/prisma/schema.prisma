@@ -21,7 +21,6 @@ model User {
   bookshelves Bookshelf[]
   reflections Reflection[]
   goals Goal[]
-  books Book[]
   reviews Review[]
 }
 
@@ -37,16 +36,13 @@ model Goal {
 }
 
 model Book {
-  id Int @id @default(autoincrement())
-  title String
+title String
   author String?
   cover String?
   description String?
-  user User? @relation(fields: [userId], references: [id])
-  userId Int?
-  bookshelf Bookshelf @relation("BooksOnShelf", fields: [bookshelfId], references: [id])
-  bookshelfId Int
-  googleId String @unique
+  bookshelf Bookshelf? @relation("BooksOnShelf", fields: [bookshelfId], references: [id])
+  bookshelfId Int?
+  googleId String  @id
   createdAt DateTime @default(now())
   reflections Reflection[]
   reviews Review[]
@@ -69,19 +65,20 @@ model Reflection{
   id Int @id @default(autoincrement())
   userId Int
   user User @relation(fields: [userId], references: [id])
-  bookId Int
-  book Book @relation(fields: [bookId], references: [id])
+  googleId String
+  book Book @relation(fields: [googleId ], references: [googleId])
   content String
   createdAt DateTime @default(now())
-  @@unique([userId, bookId])
+  @@unique([userId, googleId])
 }
 
 model Review{
   id Int @id @default(autoincrement())
   userId Int
   user User @relation(fields: [userId], references: [id])
-  bookId Int
-  book Book @relation(fields: [bookId], references: [id])
+  googleId String
+  book Book @relation(fields: [googleId ], references: [googleId])
   content String
   rating Int
+  @@unique([userId, googleId])
 }
