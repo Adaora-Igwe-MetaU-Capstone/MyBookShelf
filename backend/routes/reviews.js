@@ -55,16 +55,16 @@ router.post('/review', async (req, res) => {
             await prisma.bookshelf.create({
                 data: {
                     userId,
-                    googleId,
+                    // googleId,
                     name: "Read",
                 }
             })
         }
+        console.log({ googleId, userId, rating, content })
         const review = await prisma.review.create({
             data: {
-                user: { conncet: { id: userId } },
-                book: { connect: { id: Number(googleId) } },
-                googleId: googleId,
+                user: { connect: { id: userId } },
+                book: { connect: { id: googleId } },
                 content: content,
                 rating: Number(rating)
             }

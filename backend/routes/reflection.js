@@ -15,6 +15,14 @@ router.post('/reflection', async (req, res) => {
         let book = await prisma.book.findUnique({
             where: { googleId }
         })
+        const shelf = await prisma.bookshelf.findFirst({
+            where: {
+                userId,
+                // googleId,
+                name: "Read"
+            }
+        })
+        console.log("shelf", shelf)
         if (!book) {
             book = await prisma.book.create({
                 data: {
@@ -23,27 +31,25 @@ router.post('/reflection', async (req, res) => {
                     author,
                     cover,
                     description,
+                    bookshelf: {
+                        connect: { id: shelf.id }  // <-- correct way to connect relation
+                    }
+
 
 
                 }
             })
         }
-        const shelf = await prisma.bookshelf.findFirst({
-            where: {
-                userId,
-                // googleId,
-                name: "Read"
-            }
-        })
-        if (!shelf) {
-            await prisma.bookshelf.create({
-                data: {
-                    userId,
-                    googleId,
-                    name: "Read",
-                }
-            })
-        }
+
+        // if (!shelf) {
+        //     await prisma.bookshelf.create({
+        //         data: {
+        //             userId,
+        //             googleId,
+        //             name: "Read",
+        //         }
+        //     })
+        // }
         const reflection = await prisma.reflection.upsert({
             where: {
                 userId_googleId: {
