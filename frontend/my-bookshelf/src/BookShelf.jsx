@@ -13,7 +13,6 @@ function BookShelf() {
                 credentials: 'include'
             })
             const data = await res.json()
-            console.log(data)
             setBookshelves(data)
         } catch (err) {
             console.error("Error fetching bookshelves", err)
@@ -24,7 +23,6 @@ function BookShelf() {
     }
     useEffect(() => {
         fetchBookShelves()
-        console.log(bookshelves)
     }, [])
     return (
         <div>

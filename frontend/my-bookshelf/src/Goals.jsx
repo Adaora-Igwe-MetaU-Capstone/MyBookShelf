@@ -13,7 +13,6 @@ function Goals() {
             credentials: 'include'
         })
         const data = await res.json()
-        console.log(data)
         setGoal(data);
     }
     async function fetchAllGoal() {
@@ -23,7 +22,6 @@ function Goals() {
                 credentials: 'include'
             })
             const data = await res.json()
-            console.log(data)
             setAllGoals(data)
 
         } catch (err) {

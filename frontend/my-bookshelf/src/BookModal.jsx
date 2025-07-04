@@ -27,7 +27,6 @@ function BookModal(props) {
                 credentials: "include",
             });
             const data = await res.json();
-            console.log(data)
             setBookshelves(data);
         } catch (err) {
             console.error("Error fetching bookshelves", err)
@@ -38,8 +37,6 @@ function BookModal(props) {
         fetchShelfOption()
     }, [])
     useEffect(() => {
-        console.log(user)
-        console.log(props.modalBook)
         const saved = localStorage.getItem(`${user.user.id}shelf for ${props.modalBook.title}`)
         if (saved) {
             setSelectedBookshelf(saved)
@@ -54,7 +51,6 @@ function BookModal(props) {
         setSelectedBookshelf(selected)
         localStorage.setItem(`${user.user.id}shelf for ${props.modalBook.title}`, selected)
         try {
-            console.log(props.modalBook)
             const res = await fetch("http://localhost:3000/bookshelf/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -69,7 +65,6 @@ function BookModal(props) {
                 }),
             });
             const data = await res.json();
-            console.log("book added", props.modalBook.googleId)
             fetchBookshelves()
             alert("Book added to bookshelf")
         } catch (err) {

@@ -24,12 +24,18 @@ router.get('/reviews', async (req, res) => {
 router.post('/review', async (req, res) => {
     const userId = req.session.userId;
     const { googleId, content, title, author, cover, description, rating } = req.body;
-    // if (!userId) {
-    //     return res.status(401).json({ error: "Not logged in." });
-    // }
+    if (!userId) {
+        return res.status(401).json({ error: "Not logged in." });
+    }
     try {
         let book = await prisma.book.findUnique({
             where: { googleId }
+        })
+        const shelf = await prisma.bookshelf.findFirst({
+            where: {
+                userId,
+                name: "Read"
+            }
         })
         if (!book) {
             book = await prisma.book.create({
@@ -39,32 +45,19 @@ router.post('/review', async (req, res) => {
                     author,
                     cover,
                     description,
-
-
+                    bookshelf: {
+                        connect: { id: shelf.id }
+                    }
                 }
             })
         }
-        const shelf = await prisma.bookshelf.findFirst({
-            where: {
-                userId,
-                // googleId,
-                name: "Read"
-            }
-        })
-        if (!shelf) {
-            await prisma.bookshelf.create({
-                data: {
-                    userId,
-                    // googleId,
-                    name: "Read",
-                }
-            })
-        }
+
+
         console.log({ googleId, userId, rating, content })
         const review = await prisma.review.create({
             data: {
-                user: { connect: { id: userId } },
-                book: { connect: { id: googleId } },
+                userId: userId,
+                googleId: googleId,
                 content: content,
                 rating: Number(rating)
             }
@@ -73,6 +66,36 @@ router.post('/review', async (req, res) => {
         res.json(review)
     } catch (err) {
         res.status(500).json({ error: err })
+    }
+})
+
+//edit reviews
+router.patch('/review/:googleId', async (req, res) => {
+    const { content, rating } = req.body;
+    const userId = req.session.userId;
+    const googleId = req.params.googleId
+    if (!userId) {
+        return res.status(401).json({ error: "Not logged in." });
+    }
+    try {
+        const updated = await prisma.review.update({
+            where: {
+                userId_googleId: {
+                    userId,
+                    googleId
+                }
+            },
+            data: {
+                content,
+                rating: Number(rating)
+            }
+        })
+        res.json(updated)
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        })
     }
 })
 module.exports = router
