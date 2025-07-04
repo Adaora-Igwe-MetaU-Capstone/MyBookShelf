@@ -7,16 +7,54 @@ const prisma = new PrismaClient();
 
 router.post('/reflection', async (req, res) => {
     const userId = req.session.userId;
-    const { bookId, content } = req.body;
+    const { googleId, content, title, author, cover, description } = req.body;
     if (!userId) {
         return res.status(401).json({ error: "Not logged in." });
     }
     try {
+        let book = await prisma.book.findUnique({
+            where: { googleId }
+        })
+        const shelf = await prisma.bookshelf.findFirst({
+            where: {
+                userId,
+                // googleId,
+                name: "Read"
+            }
+        })
+        console.log("shelf", shelf)
+        if (!book) {
+            book = await prisma.book.create({
+                data: {
+                    googleId,
+                    title,
+                    author,
+                    cover,
+                    description,
+                    bookshelf: {
+                        connect: { id: shelf.id }  // <-- correct way to connect relation
+                    }
+
+
+
+                }
+            })
+        }
+
+        // if (!shelf) {
+        //     await prisma.bookshelf.create({
+        //         data: {
+        //             userId,
+        //             googleId,
+        //             name: "Read",
+        //         }
+        //     })
+        // }
         const reflection = await prisma.reflection.upsert({
             where: {
-                userId_bookId: {
+                userId_googleId: {
                     userId: userId,
-                    bookId: bookId,
+                    googleId: googleId,
                 },
             },
             update: {
@@ -24,8 +62,12 @@ router.post('/reflection', async (req, res) => {
             },
             create: {
                 userId: userId,
-                bookId: bookId,
+                googleId: googleId,
                 content: content,
+                // title,
+                // author,
+                // cover,
+                // description
             },
         });
         res.json(reflection);
@@ -35,17 +77,18 @@ router.post('/reflection', async (req, res) => {
     }
 });
 
-router.get('/reflection/:bookId', async (req, res) => {
+router.get('/reflection/:googleId', async (req, res) => {
     const userId = req.session.userId;
-    const bookId = parseInt(req.params.bookId);
-    console.log(userId, bookId)
+    const googleId = req.params.googleId
+    console.log(userId, googleId)
     if (!userId) {
         return res.status(401).json({ error: "Not logged in." });
     }
+
     try {
         const reflection = await prisma.reflection.findUnique({
             where: {
-                userId_bookId: { userId, bookId }
+                userId_googleId: { userId, googleId }
             }
         })
         res.json(reflection);

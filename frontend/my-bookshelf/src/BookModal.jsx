@@ -39,6 +39,7 @@ function BookModal(props) {
     }, [])
     useEffect(() => {
         console.log(user)
+        console.log(props.modalBook)
         const saved = localStorage.getItem(`${user.user.id}shelf for ${props.modalBook.title}`)
         if (saved) {
             setSelectedBookshelf(saved)
@@ -88,7 +89,7 @@ function BookModal(props) {
                         <h4>{props.modalBook.author}</h4></div>
                     <a href={props.modalBook.barnesandNobleLink}>Buy on Barnes & Noble</a>
                     <a href={props.modalBook.amazonLink}>Buy on Amazon</a>
-                    <button onClick={() => navigate(`/books/{props.modalBook.googleId}/review`, { state: props.modalBook })}>See Reviews</button>
+                    <button onClick={() => navigate(`/books/${props.modalBook.googleId}/reflection`, { state: props.modalBook })}>See Reviews{props.modalBook.googleId}</button>
                 </div>
                 <div><h3>{props.modalBook.description}</h3></div>
                 <select value={selectedBookshelf} onChange={addToBookshelf} defaultValue="">

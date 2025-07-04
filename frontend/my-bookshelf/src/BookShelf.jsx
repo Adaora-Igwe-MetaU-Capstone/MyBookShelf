@@ -38,7 +38,7 @@ function BookShelf() {
                     <div className="book-list">
                         {books.map((book) => (
                             <div className="book" key={book.googleId}>
-                                <Link state={book} to={'/books/${book.googleId}/reflection'}> <img src={book.cover} alt="bookcover" /></Link>
+                                <Link state={book} to={`/books/${book.googleId}/reflection`}> <img src={book.cover} alt="bookcover" /></Link>
                                 <h4>{book.title}
                                 </h4>
 
