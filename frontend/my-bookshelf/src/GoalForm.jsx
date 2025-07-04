@@ -17,8 +17,7 @@ function GoalForm(props) {
             })
             const data = await res.json()
             props.fetchGoal()
-            props.fetchAllGoal
-            console.log(isPublic)
+            props.fetchAllGoal()
         } catch (error) {
             console.error(error)
         }
