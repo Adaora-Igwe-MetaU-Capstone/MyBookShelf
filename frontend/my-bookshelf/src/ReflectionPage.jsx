@@ -2,11 +2,15 @@ import { useLocation } from "react-router-dom"
 import { useState } from "react"
 import { useEffect } from "react"
 import ReviewForm from "./ReviewForm"
-function ReflectionPage() {
+import ReviewsPage from "./ReviewsPage"
+import { useUser } from "./contexts/UserContext"
+function ReflectionPage(props) {
     const location = useLocation()
     const bookData = location.state
     const [reflection, setReflection] = useState(" ")
+    const [reviews, setReviews] = useState([])
     const [editMode, setEditMode] = useState(false)
+    const user = useUser()
     const [existingReflection, setExistingReflection] = useState(false)
     console.log(bookData)
     const fetchReflection = async () => {
@@ -21,6 +25,19 @@ function ReflectionPage() {
             setReflection(data.content)
             setExistingReflection(true)
         }
+    }
+    async function getReviews() {
+        const res = await fetch('http://localhost:3000/reviews')
+        const data = await res.json()
+        const filteredReviews = data.filter((review) => (review.googleId === bookData.googleId))
+        const userReview = filteredReviews.find((review) => (review.userId === user.user.id))
+        if (userReview) {
+            setContent(userReview.content)
+            setRating(() => userReview.rating)
+        }
+        setReviews(() => filteredReviews)
+        console.log(user)
+
     }
     const handleSave = async (e) => {
         e.preventDefault()
@@ -54,6 +71,7 @@ function ReflectionPage() {
     }
     useEffect(() => {
         fetchReflection()
+        getReviews()
         console.log(bookData)
     }, [bookData.googleId])
     return (
@@ -65,8 +83,8 @@ function ReflectionPage() {
                 <a href={bookData.barnesandNobleLink}>Buy on Barnes & Noble</a>
                 <a href={bookData.amazonLink}>Buy on Amazon</a>
             </div>
-            <ReviewForm bookData={bookData} />
-
+            <ReviewForm getReviews={getReviews} bookData={bookData} />
+            <ReviewsPage reviews={reviews} getReviews={getReviews} bookData={bookData} />
             {existingReflection && !editMode ? (
                 <>
                     <p><strong>Your Reflection:</strong></p>

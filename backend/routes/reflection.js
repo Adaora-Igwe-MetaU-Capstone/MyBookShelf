@@ -18,7 +18,6 @@ router.post('/reflection', async (req, res) => {
         const shelf = await prisma.bookshelf.findFirst({
             where: {
                 userId,
-                // googleId,
                 name: "Read"
             }
         })
@@ -32,24 +31,12 @@ router.post('/reflection', async (req, res) => {
                     cover,
                     description,
                     bookshelf: {
-                        connect: { id: shelf.id }  // <-- correct way to connect relation
+                        connect: { id: shelf.id }
                     }
-
-
-
                 }
             })
         }
 
-        // if (!shelf) {
-        //     await prisma.bookshelf.create({
-        //         data: {
-        //             userId,
-        //             googleId,
-        //             name: "Read",
-        //         }
-        //     })
-        // }
         const reflection = await prisma.reflection.upsert({
             where: {
                 userId_googleId: {
@@ -64,10 +51,6 @@ router.post('/reflection', async (req, res) => {
                 userId: userId,
                 googleId: googleId,
                 content: content,
-                // title,
-                // author,
-                // cover,
-                // description
             },
         });
         res.json(reflection);
@@ -84,7 +67,6 @@ router.get('/reflection/:googleId', async (req, res) => {
     if (!userId) {
         return res.status(401).json({ error: "Not logged in." });
     }
-
     try {
         const reflection = await prisma.reflection.findUnique({
             where: {

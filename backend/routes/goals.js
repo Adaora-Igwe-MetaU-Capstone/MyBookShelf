@@ -65,8 +65,6 @@ router.get('/goals', async (req, res) => {
             }
         }
     })
-    console.log("hii isu")
-    console.log(goals)
     res.json(goals)
 })
 

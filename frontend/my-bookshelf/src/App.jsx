@@ -20,8 +20,8 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         if (data.id) {
-          setUser(data); // Persist login state
-          setCurrUser(data); // Set current user state
+          setUser(data);
+          setCurrUser(data);
         }
       });
   }, []);
