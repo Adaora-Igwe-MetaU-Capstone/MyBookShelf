@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { useUser } from "./contexts/UserContext"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
+import "./SignUp.css"
 function SignUp() {
     const [formData, setFormData] = useState({ username: "", password: "" })
     const [message, setMessage] = useState("")
@@ -36,14 +37,18 @@ function SignUp() {
     }
     return (
         <div>
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="username" value={formData.username} onChange={handleFormChange} />
-                <input type="password" name="password" value={formData.password} onChange={handleFormChange} />
-                <button type="submit">SignUp</button>
+            <h1 className="title">MyBookShelf!</h1>
+            <h4>Join the bookclub!</h4>
+            <form className="signup-form" onSubmit={handleSubmit}>
+                <label htmlFor="">Username:</label>
+                <input className="username" type="text" name="username" value={formData.username} onChange={handleFormChange} />
+                <label htmlFor="">Password:</label>
+                <input className="password" type="password" name="password" value={formData.password} onChange={handleFormChange} />
+                <button className="signup" type="submit">SignUp</button>
                 {message && (<div className={`message, ${message.type}`}>
                     {message.text}</div>)}
             </form>
-            <p>
+            <p className="message">
                 Already have an account? <Link to="/login">Login</Link>
             </p>
         </div>

@@ -1,0 +1,25 @@
+.goals-button {
+    margin-top: 250px;
+    margin-left: 150px;
+    display: flex;
+    justify-content: center;
+
+
+}
+
+#goals td,
+#goals th {
+    padding: 10px;
+}
+
+#goals {
+    font-size: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.is-public {
+    width: 20px;
+    height: 20px;
+}

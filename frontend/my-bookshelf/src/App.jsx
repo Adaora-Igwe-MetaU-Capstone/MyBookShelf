@@ -9,7 +9,6 @@ import Home from './Home'
 import BookShelf from './BookShelf'
 import Goals from './Goals'
 import ReflectionPage from './ReflectionPage'
-import BookReviewsPage from './BookReviewsPage'
 function App() {
   const { user, setUser } = useUser()
   const [currUser, setCurrUser] = useState("")

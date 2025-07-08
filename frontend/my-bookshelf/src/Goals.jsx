@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import GoalForm from "./GoalForm"
 import GoalCircle from "./GoalCircle"
+import './Goals.css'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 function Goals() {
@@ -35,9 +36,9 @@ function Goals() {
     return (
         <>
             {goal !== null ? <GoalCircle goal={goal} /> : (<GoalForm fetchAllGoal={fetchAllGoal} fetchGoal={fetchGoal} />)}
-            <button onClick={() => setShowAllGoals(prev => !prev)}>{showAllGoals === true ? "Hide Community Goals" : "Show Community Goals"}</button>
+            <button className="goals-button" onClick={() => setShowAllGoals(prev => !prev)}>{showAllGoals === true ? "Hide Community Goals" : "Show Community Goals"}</button>
             {showAllGoals && (
-                <table>
+                <table id="goals">
                     <thead>
                         <tr>
                             <th>User</th>

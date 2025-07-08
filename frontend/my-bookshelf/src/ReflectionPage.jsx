@@ -10,6 +10,8 @@ function ReflectionPage(props) {
     const [reflection, setReflection] = useState(" ")
     const [reviews, setReviews] = useState([])
     const [editMode, setEditMode] = useState(false)
+    const [content, setContent] = useState("")
+    const [rating, setRating] = useState(0)
     const user = useUser()
     const [existingReflection, setExistingReflection] = useState(false)
     console.log(bookData)
@@ -70,9 +72,10 @@ function ReflectionPage(props) {
         }
     }
     useEffect(() => {
+        console.log("reviews", rating, content)
         fetchReflection()
         getReviews()
-        console.log(bookData)
+
     }, [bookData.googleId])
     return (
         <>
@@ -83,8 +86,8 @@ function ReflectionPage(props) {
                 <a href={bookData.barnesandNobleLink}>Buy on Barnes & Noble</a>
                 <a href={bookData.amazonLink}>Buy on Amazon</a>
             </div>
-            <ReviewForm getReviews={getReviews} bookData={bookData} />
-            <ReviewsPage reviews={reviews} getReviews={getReviews} bookData={bookData} />
+            <ReviewForm setContent={setContent} setRating={setRating} content={content} rating={rating} reviews={reviews} getReviews={getReviews} bookData={bookData} />
+            <ReviewsPage etContent={setContent} setRating={setRating} content={content} rating={rating} reviews={reviews} getReviews={getReviews} bookData={bookData} />
             {existingReflection && !editMode ? (
                 <>
                     <p><strong>Your Reflection:</strong></p>

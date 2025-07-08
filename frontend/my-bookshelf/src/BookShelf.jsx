@@ -26,8 +26,9 @@ function BookShelf() {
     }, [])
     return (
         <div>
-            <i onClick={goBackHome} className="fa-solid fa-arrow-left"></i>
-            <h2>MY BOOKS</h2>
+            <div className="header"><i id="goBack" onClick={goBackHome} className="fa-solid fa-arrow-left"></i>
+                <h2 className="my-books">MY BOOKS</h2></div>
+
             {Object.entries(bookshelves).map(([shelfname, books]) => (
                 <div key={shelfname}>
                     <h2>

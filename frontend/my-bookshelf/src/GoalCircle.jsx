@@ -33,7 +33,7 @@ function GoalCircle(props) {
                 value={progress / props.goal.target * 100}
                 text={`${Math.round(progress / props.goal.target * 100)}%`}
             />
-            <p>You've read {progress} out of your {props.goal.target} books goal!</p>
+            <p className='progress-report'>You've read {progress} out of your {props.goal.target} books goal!</p>
         </div>
     )
 }

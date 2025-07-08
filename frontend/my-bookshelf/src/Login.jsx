@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from './contexts/UserContext';
 import { Link } from "react-router-dom";
+import "./Login.css";
 function Login() {
     const [formData, setFormData] = useState({ username: "", password: "" })
     const [message, setMessage] = useState("")
@@ -34,15 +35,19 @@ function Login() {
         }
     }
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="username" value={formData.username} onChange={handleFormChange} />
-                <input type="password" name="password" value={formData.password} onChange={handleFormChange} />
-                <button type="submit">Login</button>
+        <div className="login-page">
+            <h1 className="title">MyBookShelf!</h1>
+            <h4>Welcome Back!</h4>
+            <form className="login-form" onSubmit={handleSubmit}>
+                <label >Username:</label>
+                <input className="username" type="text" name="username" value={formData.username} onChange={handleFormChange} />
+                <label >Password:</label>
+                <input className="password" type="password" name="password" value={formData.password} onChange={handleFormChange} />
+                <button className="login" type="submit">Login</button>
                 {message && (<div className={`message, ${message.type}`}>
                     {message.text}</div>)}
             </form>
-            <p>
+            <p className="message">
                 Don't have an account? <Link to="/signup">Register</Link>
             </p>
         </div>
