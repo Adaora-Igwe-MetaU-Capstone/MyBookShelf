@@ -25,10 +25,10 @@ function GoalForm(props) {
     return (
         <div>
             <form action="">
-                <label htmlFor="">Set your {currentYear} reading goal!</label>
-                <input onChange={handleFormChange} value={target} type="number" />
+                <label htmlFor="">Set your {currentYear} reading goal!</label><br />
+                <input onChange={handleFormChange} value={target} type="number" /><br />
                 <label htmlFor="">Make goal pubic!</label>
-                <input checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} type="checkbox" />
+                <input className="is-public" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} type="checkbox" />
 
             </form>
             <button onClick={handleSubmit} type="submit">Save Goal</button>

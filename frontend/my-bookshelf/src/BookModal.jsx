@@ -1,10 +1,12 @@
 import { use, useEffect, useState } from "react"
 import { useUser } from "./contexts/UserContext"
 import { useNavigate } from "react-router-dom"
+import "./BookModal.css"
 function BookModal(props) {
     const [bookshelves, setBookshelves] = useState([])
     const [selectedBookshelf, setSelectedBookshelf] = useState("")
     const [shelfOptions, setShelfOptions] = useState([])
+    const [booksInShelf, setBooksInShelf] = useState([])
     const { user, setUser } = useUser()
     const navigate = useNavigate()
     const closeModal = () => {
@@ -32,15 +34,35 @@ function BookModal(props) {
             console.error("Error fetching bookshelves", err)
         }
     }
+    async function fetchBooksInShelves() {
+        try {
+            const res = await fetch('http://localhost:3000/user-bookshelves', {
+                method: 'GET',
+                credentials: 'include'
+            })
+            const data = await res.json()
+            for (const shelf in data) {
+                const found = data[shelf].find((book) => book.googleId === props.modalBook.googleId)
+                if (found) {
+                    setSelectedBookshelf(shelf)
+                    break;
+                }
+            }
+
+        } catch (err) {
+            console.error("Error fetching bookshelves", err)
+        }
+        if (props.modalBook.googleId) {
+            fetchBooksInShelves()
+        }
+    }
     useEffect(() => {
         fetchBookshelves()
         fetchShelfOption()
+
     }, [])
     useEffect(() => {
-        const saved = localStorage.getItem(`${user.user.id}shelf for ${props.modalBook.title}`)
-        if (saved) {
-            setSelectedBookshelf(saved)
-        }
+        fetchBooksInShelves()
     }, [props.modalBook.googleId])
     const addToBookshelf = async (e) => {
         const selected = e.target.value
@@ -77,24 +99,30 @@ function BookModal(props) {
             <div className="modal">
                 <div className="modal-header">
                     <i onClick={closeModal} id="closeIcon" className="fa-solid fa-xmark"></i>
-                    <img src={props.modalBook.cover} alt="" />
+                    <img className="book-cover" src={props.modalBook.cover} alt="bookcover" />
 
                     <div className="book-details">
                         <h3>{props.modalBook.title}</h3>
-                        <h4>{props.modalBook.author}</h4></div>
-                    <a href={props.modalBook.barnesandNobleLink}>Buy on Barnes & Noble</a>
-                    <a href={props.modalBook.amazonLink}>Buy on Amazon</a>
-                    <button onClick={() => navigate(`/books/${props.modalBook.googleId}/reflection`, { state: props.modalBook })}>See Reviews{props.modalBook.googleId}</button>
+                        <h4>{props.modalBook.author}</h4>
+                        <button className="see-more" onClick={() => navigate(`/books/${props.modalBook.googleId}/reflection`, { state: props.modalBook })}>See Reviews</button></div>
+
+                    {/* <a href={props.modalBook.barnesandNobleLink}>Buy on Barnes & Noble</a>
+                    <a href={props.modalBook.amazonLink}>Buy on Amazon</a> */}
+
                 </div>
+
                 <div><h3>{props.modalBook.description}</h3></div>
-                <select value={selectedBookshelf} onChange={addToBookshelf} defaultValue="">
+                <select value={selectedBookshelf} onChange={(e) => {
+                    setSelectedBookshelf(e.target.value);
+                    addToBookshelf(e)
+                }} defaultValue="">
                     <option value="">Select a  shelf</option>
                     {shelfOptions.map((shelf) => (
                         <option key={shelf} value={shelf}>{shelf.replace(/([A-Z])/g, "$1").trim()}</option>
                     ))}
                 </select>
             </div>
-        </div>
+        </div >
     )
 }
 export default BookModal;

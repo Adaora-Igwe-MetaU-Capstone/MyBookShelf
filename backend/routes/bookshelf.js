@@ -33,9 +33,7 @@ router.post("/bookshelf/add", async (req, res) => {
     const bookshelf = await prisma.bookshelf.findFirst({
         where: { userId: userId, name: bookshelfId, }
     })
-    console.log(userId)
-    console.log(req.body)
-    console.log(bookshelf)
+
     if (!bookshelf) {
         return res.status(403).json({ error: "Unauthorized Access" })
     }
@@ -55,7 +53,7 @@ router.post("/bookshelf/add", async (req, res) => {
 
 // GET BOOKS IN BOOKSHELF
 router.get("/user-bookshelves", async (req, res) => {
-    console.log("men", req.session)
+
     const userId = req.session.userId;
     if (!userId) {
         return res.status(401).json({ error: "Not Logged In" })
@@ -70,12 +68,12 @@ router.get("/user-bookshelves", async (req, res) => {
             groupedBooks[shelf.name] = shelf.books
         }
         res.json(groupedBooks)
-        console.log(userId)
-        console.log("bookshelves", bookshelves)
-        console.log("groupedBooks", groupedBooks)
+
     } catch (err) {
         console.error(err)
         res.status(500).json({ error: "Error fetching bookshelves" })
     }
 })
+
+
 module.exports = router

@@ -1,3 +1,4 @@
+import './Book.css'
 function Book(props) {
     const modalBookObject = {
         title: props.bookTitle,

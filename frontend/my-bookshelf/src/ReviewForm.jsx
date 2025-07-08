@@ -1,8 +1,11 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useUser } from "./contexts/UserContext"
 function ReviewForm(props) {
     const [review, setReview] = useState("")
     const [rating, setRating] = useState(0)
     const [submitted, setSubmitted] = useState(false)
+    const { user } = useUser()
+    console.log(user)
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
@@ -21,9 +24,10 @@ function ReviewForm(props) {
                 })
             })
             if (res.ok) {
-                setSubmitted(true)
+                setSubmitted(() => true)
                 props.getReviews()
                 alert("Review submitted successfully")
+                console.log("Review submitted successfully", submitted)
             } else {
                 alert("Error submitting review")
 
@@ -32,18 +36,24 @@ function ReviewForm(props) {
             console.log(err)
         }
     }
+    const userReview = props.reviews.find((review) => review.googleId === props.bookData.googleId && review.userId === user.user.id)
+    console.log(props.reviews)
+    console.log(userReview)
+    useEffect(() => {
+        console.log(submitted)
+    }, [])
     return (
 
         <div>
-            {!submitted && (<form onSubmit={handleSubmit} action="">
-                <label htmlFor="">Review:</label>
+            {!userReview ? (<form onSubmit={handleSubmit} action="">
+                <label htmlFor="">Review: </label>
                 <textarea value={review} name="" id="" onChange={(e) => setReview(e.target.value)}></textarea>
                 <br />
                 <label htmlFor="">Rating:</label>
                 <input value={rating} type="number" min="1" max="5" name="" id="" onChange={(e) => setRating(Number(e.target.value))} />
                 <br />
                 <button type="submit">Submit</button>
-            </form>)}
+            </form>) : (<div>Review submitted</div>)}
         </div>
     )
 }

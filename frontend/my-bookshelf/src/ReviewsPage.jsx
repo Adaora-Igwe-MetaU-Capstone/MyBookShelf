@@ -2,9 +2,29 @@ import { useState, useEffect } from "react"
 import { useUser } from "./contexts/UserContext"
 function ReviewsPage(props) {
     const [editMode, setEditMode] = useState(false)
-    const [content, setContent] = useState("")
-    const [rating, setRating] = useState(0)
+    const [content, setContent] = useState()
+    const [rating, setRating] = useState()
     const { user } = useUser()
+    async function getReviews() {
+        const res = await fetch('http://localhost:3000/reviews')
+        const data = await res.json()
+        const filteredReviews = data.filter((review) => (review.googleId === props.bookData.googleId))
+        const userReview = filteredReviews.find((review) => (review.userId === user.user.id))
+        console.log("userReview", userReview)
+        if (userReview) {
+            console.log("userReview", userReview)
+            setContent(userReview.content)
+            setRating(() => userReview.rating)
+        }
+        console.log(user)
+
+    }
+    const handleEdit = () => {
+        getReviews()
+        setContent(content)
+        setRating(Number(rating))
+        setEditMode(true)
+    }
     async function handleSave() {
         const res = await fetch(`http://localhost:3000/review/${props.bookData.googleId}`, {
             method: 'PATCH',
@@ -22,8 +42,10 @@ function ReviewsPage(props) {
             alert('Something went wrong')
         }
     }
+    console.log("content", content, "rating", rating)
     useEffect(() => {
-        props.getReviews()
+
+        getReviews()
     }, [props.bookData.googleId])
     return (
         <div><div>
@@ -37,7 +59,7 @@ function ReviewsPage(props) {
                         <p>{review.content}</p>
                         <p>{review.rating}//5</p>
                         {review.user.username === user.user.username && !editMode && (
-                            <button onClick={() => setEditMode(true)}>Edit</button>
+                            <button onClick={handleEdit}>Edit</button>
                         )}
                     </div>
                 ))
@@ -48,7 +70,7 @@ function ReviewsPage(props) {
                     <h3>Edit Your Review:</h3>
                     <textarea onChange={(e) => setContent(e.target.value)
                     } value={content} name="" id=""></textarea>
-                    <input value={rating} onChange={(e) => setRating(e.target.value)} type="number" max='5' min="1" />
+                    <input value={Number(rating)} onChange={(e) => setRating(e.target.value)} type="number" max='5' min="1" />
                     <button onClick={handleSave}>Save Changes</button>
                 </div>
             )}

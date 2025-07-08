@@ -51,9 +51,6 @@ router.post('/review', async (req, res) => {
                 }
             })
         }
-
-
-        console.log({ googleId, userId, rating, content })
         const review = await prisma.review.create({
             data: {
                 userId: userId,
