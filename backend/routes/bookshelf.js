@@ -43,7 +43,7 @@ router.post("/bookshelf/add", async (req, res) => {
         update: {
             bookshelfId: bookshelf.id
         }, create: {
-            title, author, cover, description, googleId, bookshelfId: bookshelf.id
+            title, author, genres, cover, description, googleId, bookshelfId: bookshelf.id
 
         }
 

@@ -80,6 +80,7 @@ function BookModal(props) {
                 body: JSON.stringify({
                     title: props.modalBook.title,
                     author: props.modalBook.author,
+                    genre: props.modalBook.genre,
                     cover: props.modalBook.cover,
                     description: props.modalBook.description,
                     googleId: props.modalBook.googleId,
