@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import './App.css'
 import SignUp from './SignUp'
 import Login from './Login'
@@ -9,6 +9,7 @@ import Home from './Home'
 import BookShelf from './BookShelf'
 import Goals from './Goals'
 import ReflectionPage from './ReflectionPage'
+import { addToOfflineQueue, getOfflineQueue, syncOfflineQueue } from '../../../backend/utils/offlineQueue'
 function App() {
   const { user, setUser } = useUser()
   const [currUser, setCurrUser] = useState("")
@@ -24,6 +25,23 @@ function App() {
         }
       });
   }, []);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      console.log("Back Online!")
+      syncOfflineQueue()
+    }
+    window.addEventListener("online", handleOnline)
+    if (navigator.onLine) {
+      syncOfflineQueue()
+    }
+    return () => {
+      window.removeEventListener("online", handleOnline)
+    }
+
+  }
+
+    , [])
   return (
     <BrowserRouter>
       <Routes >

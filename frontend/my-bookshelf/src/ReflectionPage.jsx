@@ -42,6 +42,9 @@ function ReflectionPage(props) {
 
     }
     const handleSave = async (e) => {
+        if (!navigator.onLine) {
+            alert("ERROE")
+        }
         e.preventDefault()
         try {
             const res = await fetch('http://localhost:3000/reflection', {
@@ -59,8 +62,9 @@ function ReflectionPage(props) {
                     description: bookData.description,
                 })
             })
-            if (res.ok) {
+            if (res && res.ok) {
                 alert("Reflection saved successfully")
+                console.log(res, navigator.onLine)
                 setEditMode(false)
                 setExistingReflection(true)
             } else {
@@ -72,7 +76,7 @@ function ReflectionPage(props) {
         }
     }
     useEffect(() => {
-        console.log("reviews", rating, content)
+
         fetchReflection()
         getReviews()
 

@@ -1,6 +1,7 @@
 import { useState } from "react"
 function GoalForm(props) {
     const currentYear = new Date().getFullYear()
+    const [isEditing, setIsEditing] = useState(false)
     const [target, setTarget] = useState(0)
     const [isPublic, setIsPublic] = useState(false)
     const handleFormChange = (e) => {

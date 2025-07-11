@@ -7,6 +7,7 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import QuoteBanner from "./QuoteBanner";
 import { useUser } from './contexts/UserContext';
+import { saveBookstoDB, getBooksFromDB } from "./utils/db";
 function Home(props) {
     const [searchInput, setSearchInput] = useState("")
     const [searchResults, setSearchResults] = useState([])
@@ -24,11 +25,27 @@ function Home(props) {
         setSearchInput(() => e.target.value)
     }
     async function fetchPopularBooks() {
-        const url = `http://localhost:3000/popular`
-        const response = await fetch(url)
-        const data = await response.json()
-        console.log(data)
-        setPopularBooks(data)
+        console.log(navigator.onLine)
+        if (navigator.onLine) {
+            try {
+                const url = `http://localhost:3000/popular`
+                const response = await fetch(url)
+                const data = await response.json()
+                setPopularBooks(data)
+                await saveBookstoDB(data)
+            } catch {
+                return false
+            }
+        } else {
+            const cached = await getBooksFromDB()
+            console.log("cschr", cached)
+            if (cached) {
+
+                setPopularBooks(cached)
+            } else {
+                alert("No offline data found")
+            }
+        }
     }
     useEffect(() => {
         fetchPopularBooks()
