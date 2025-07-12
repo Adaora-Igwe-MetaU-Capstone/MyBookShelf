@@ -31,6 +31,17 @@ export async function syncOfflineQueue() {
                 })
 
             }
+            else if (type === 'SAVE_REFLECTION') {
+                await fetch('http://localhost:3000/reflection', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                })
+
+            }
 
         } catch (err) {
             console.error(`Failed to sync action ${type}:`, err)

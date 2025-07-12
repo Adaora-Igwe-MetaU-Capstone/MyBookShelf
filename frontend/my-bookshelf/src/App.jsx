@@ -9,12 +9,13 @@ import Home from './Home'
 import BookShelf from './BookShelf'
 import Goals from './Goals'
 import ReflectionPage from './ReflectionPage'
-import { addToOfflineQueue, getOfflineQueue, syncOfflineQueue } from '../../../backend/utils/offlineQueue'
+import { getQueue, initDB, syncQueue } from './utils/db'
 function App() {
   const { user, setUser } = useUser()
   const [currUser, setCurrUser] = useState("")
   const ProtectedHome = WithAuth(Home);
   const ProtectedBookshelf = WithAuth(BookShelf);
+
   useEffect(() => {
     fetch("http://localhost:3000/me", { credentials: "include" })
       .then((response) => response.json())
@@ -28,12 +29,14 @@ function App() {
 
   useEffect(() => {
     const handleOnline = () => {
+
+      syncQueue()
       console.log("Back Online!")
-      syncOfflineQueue()
     }
     window.addEventListener("online", handleOnline)
     if (navigator.onLine) {
-      syncOfflineQueue()
+      syncQueue()
+
     }
     return () => {
       window.removeEventListener("online", handleOnline)

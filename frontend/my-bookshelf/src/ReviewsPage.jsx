@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react"
 import { useUser } from "./contexts/UserContext"
+import { addToQueue } from "./utils/db"
+
 function ReviewsPage(props) {
     const [editMode, setEditMode] = useState(false)
     const [content, setContent] = useState()
@@ -10,13 +12,10 @@ function ReviewsPage(props) {
         const data = await res.json()
         const filteredReviews = data.filter((review) => (review.googleId === props.bookData.googleId))
         const userReview = filteredReviews.find((review) => (review.userId === user.user.id))
-        console.log("userReview", userReview)
         if (userReview) {
-            console.log("userReview", userReview)
             setContent(userReview.content)
             setRating(() => userReview.rating)
         }
-        console.log(user)
 
     }
     const handleEdit = () => {
@@ -25,15 +24,21 @@ function ReviewsPage(props) {
         setRating(Number(rating))
         setEditMode(true)
     }
-    async function handleSave() {
+    async function handleSave(e) {
+        e.preventDefault()
+        const data = { content, rating, googleId: props.bookData.googleId }
+        if (!navigator.onLine) {
+            await addToQueue({ type: "EDIT_REVIEW", data: data })
+
+            alert("You are offline, We'll sync this when you come online")
+            setEditMode(false)
+            return
+        }
         const res = await fetch(`http://localhost:3000/review/${props.bookData.googleId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             credentials: "include",
-            body: JSON.stringify({
-                content,
-                rating
-            })
+            body: JSON.stringify(data)
         })
         if (res.ok) {
             setEditMode(false)
@@ -42,10 +47,25 @@ function ReviewsPage(props) {
             alert('Something went wrong')
         }
     }
-    console.log("content", content, "rating", rating)
     useEffect(() => {
 
         getReviews()
+    }, [props.bookData.googleId])
+    useEffect(() => {
+        const handleSync = (e) => {
+            if (!e.detail) return
+            const { review, rating, googleId } = e.detail
+            if (googleId === props.bookData.googleId) {
+                setEditMode(false)
+                props.getReviews()
+                // setReview(review)
+                // setRating(rating)
+
+            }
+
+        }
+        window.addEventListener('REVIEW_SAVED', handleSync)
+        return () => { window.removeEventListener('REVIEW_SAVED', handleSync) }
     }, [props.bookData.googleId])
     return (
         <div><div>

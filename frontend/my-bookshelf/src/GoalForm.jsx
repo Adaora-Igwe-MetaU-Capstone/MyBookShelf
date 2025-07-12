@@ -1,4 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { addToQueue } from "./utils/db"
+
 function GoalForm(props) {
     const currentYear = new Date().getFullYear()
     const [isEditing, setIsEditing] = useState(false)
@@ -9,11 +11,18 @@ function GoalForm(props) {
     }
     async function handleSubmit(e) {
         e.preventDefault()
+        const data = { year: currentYear, target, isPublic }
+        if (!navigator.onLine) {
+            await addToQueue({ type: "SAVE_GOAL", data: data })
+            alert("You are offline, We'll sync this when you come online")
+            return
+        }
+
         try {
             const res = await fetch('http://localhost:3000/goal', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ year: currentYear, target, isPublic }),
+                body: JSON.stringify(data),
                 credentials: 'include'
             })
             const data = await res.json()
@@ -23,6 +32,18 @@ function GoalForm(props) {
             console.error(error)
         }
     }
+    useEffect(() => {
+        const handleSync = (e) => {
+            if (!e.detail) return
+            props.fetchGoal()
+            props.fetchAllGoal()
+
+
+
+        }
+        window.addEventListener('GOAL_SAVED', handleSync)
+        return () => { window.removeEventListener('GOAL_SAVED', handleSync) }
+    }, [])
     return (
         <div>
             <form action="">

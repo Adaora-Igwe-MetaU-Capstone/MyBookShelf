@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import ReviewForm from "./ReviewForm"
 import ReviewsPage from "./ReviewsPage"
 import { useUser } from "./contexts/UserContext"
+import { addToQueue } from "./utils/db"
 function ReflectionPage(props) {
     const location = useLocation()
     const bookData = location.state
@@ -14,7 +15,6 @@ function ReflectionPage(props) {
     const [rating, setRating] = useState(0)
     const user = useUser()
     const [existingReflection, setExistingReflection] = useState(false)
-    console.log(bookData)
     const fetchReflection = async () => {
         const res = await fetch(`http://localhost:3000/reflection/${bookData.googleId}`, {
             method: 'GET',
@@ -22,7 +22,6 @@ function ReflectionPage(props) {
         }
         )
         const data = await res.json()
-        console.log(data)
         if (data?.content) {
             setReflection(data.content)
             setExistingReflection(true)
@@ -38,14 +37,23 @@ function ReflectionPage(props) {
             setRating(() => userReview.rating)
         }
         setReviews(() => filteredReviews)
-        console.log(user)
 
     }
     const handleSave = async (e) => {
-        if (!navigator.onLine) {
-            alert("ERROE")
-        }
         e.preventDefault()
+        const data = {
+            googleId: bookData.googleId,
+            content: reflection,
+            title: bookData.title,
+            author: bookData.author,
+            cover: bookData.cover,
+            description: bookData.description,
+        }
+        if (!navigator.onLine) {
+            await addToQueue({ type: "SAVE_REFLECTION", data: data })
+            alert("You are offline, We'll sync this when you come online")
+            return
+        }
         try {
             const res = await fetch('http://localhost:3000/reflection', {
                 method: 'POST',
@@ -53,18 +61,10 @@ function ReflectionPage(props) {
                     'Content-Type': 'application/json'
                 },
                 credentials: 'include',
-                body: JSON.stringify({
-                    googleId: bookData.googleId,
-                    content: reflection,
-                    title: bookData.title,
-                    author: bookData.author,
-                    cover: bookData.cover,
-                    description: bookData.description,
-                })
+                body: JSON.stringify(data)
             })
             if (res && res.ok) {
                 alert("Reflection saved successfully")
-                console.log(res, navigator.onLine)
                 setEditMode(false)
                 setExistingReflection(true)
             } else {
@@ -80,6 +80,20 @@ function ReflectionPage(props) {
         fetchReflection()
         getReviews()
 
+    }, [bookData.googleId])
+    useEffect(() => {
+        const handleSync = (e) => {
+            if (!e.detail) return
+            const { reflection, googleId } = e.detail
+            if (googleId === bookData.googleId) {
+                setReflection(reflection)
+                setEditMode(false)
+                setExistingReflection(true)
+            }
+
+        }
+        window.addEventListener('REFLECTION_SAVED', handleSync)
+        return () => { window.removeEventListener('REFLECTION_SAVED', handleSync) }
     }, [bookData.googleId])
     return (
         <>

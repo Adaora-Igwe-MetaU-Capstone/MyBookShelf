@@ -2,7 +2,7 @@ import { use, useEffect, useState } from "react"
 import { useUser } from "./contexts/UserContext"
 import { useNavigate } from "react-router-dom"
 import "./BookModal.css"
-import { addToOfflineQueue } from "../../../backend/utils/offlineQueue"
+import { addToQueue } from "./utils/db"
 function BookModal(props) {
     const [bookshelves, setBookshelves] = useState([])
     const [selectedBookshelf, setSelectedBookshelf] = useState("")
@@ -14,7 +14,11 @@ function BookModal(props) {
         props.setIsClicked(false)
     }
     const fetchShelfOption = async () => {
+        if (!navigator.onLine) {
+            setShelfOptions(["WanttoRead", "CurrentlyReading", "Read"])
 
+            return
+        }
         try {
             const res = await fetch("http://localhost:3000/shelves", {
                 credentials: "include",
@@ -26,6 +30,12 @@ function BookModal(props) {
         }
     }
     const fetchBookshelves = async () => {
+
+        if (!navigator.onLine) {
+
+
+            return
+        }
         try {
             const res = await fetch("http://localhost:3000/bookshelf", {
                 credentials: "include",
@@ -37,6 +47,12 @@ function BookModal(props) {
         }
     }
     async function fetchBooksInShelves() {
+        if (!navigator.onLine) {
+
+
+            return
+        }
+
         try {
             const res = await fetch('http://localhost:3000/user-bookshelves', {
                 method: 'GET',
@@ -66,10 +82,8 @@ function BookModal(props) {
     useEffect(() => {
         fetchBooksInShelves()
     }, [props.modalBook.googleId])
-    console.log(props.modalBook)
     const addToBookshelf = async (e) => {
         const selected = e.target.value
-        console.log(selected)
         if (!selected) {
             return alert("Please select a bookshelf")
         }
@@ -86,8 +100,9 @@ function BookModal(props) {
 
         }
         if (!navigator.onLine) {
-            addToOfflineQueue({ type: "ADD_TO_SHELF", data: bookData })
             alert("You are offline, We'll sync this when you come online")
+            await addToQueue({ type: "ADD_TO_SHELF", data: bookData })
+
             return
         }
         try {

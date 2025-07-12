@@ -54,6 +54,7 @@ router.post('/reflection', async (req, res) => {
                 content: content,
             },
         });
+        console.log(reflection)
         res.json(reflection);
     } catch (err) {
 
