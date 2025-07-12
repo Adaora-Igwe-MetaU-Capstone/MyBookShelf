@@ -1,47 +1,64 @@
 import { useState, useEffect } from "react"
 import { useUser } from "./contexts/UserContext"
+import { addToQueue } from "./utils/db"
 function ReviewForm(props) {
     const [review, setReview] = useState("")
     const [rating, setRating] = useState(0)
     const [submitted, setSubmitted] = useState(false)
     const { user } = useUser()
-    console.log(user)
     const handleSubmit = async (e) => {
         e.preventDefault()
+        const data = {
+            googleId: props.bookData.googleId,
+            content: review,
+            rating: Number(rating),
+            title: props.bookData.title,
+            author: props.bookData.author,
+            cover: props.bookData.cover,
+            description: props.bookData.description,
+        }
+        if (!navigator.onLine) {
+            await addToQueue({ type: "ADD_REVIEW", data: data })
+            alert("You are offline, We'll sync this when you come online")
+            return
+        }
         try {
             const res = await fetch('http://localhost:3000/review', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({
-                    googleId: props.bookData.googleId,
-                    content: review,
-                    rating: Number(rating),
-                    title: props.bookData.title,
-                    author: props.bookData.author,
-                    cover: props.bookData.cover,
-                    description: props.bookData.description,
-                })
+                body: JSON.stringify(data)
             })
             if (res.ok) {
                 setSubmitted(() => true)
                 props.getReviews()
                 alert("Review submitted successfully")
-                console.log("Review submitted successfully", submitted)
             } else {
                 alert("Error submitting review")
 
             }
         } catch (err) {
-            console.log(err)
         }
     }
     const userReview = props.reviews.find((review) => review.googleId === props.bookData.googleId && review.userId === user.user.id)
-    console.log(props.reviews)
-    console.log(userReview)
     useEffect(() => {
-        console.log(submitted)
     }, [])
+    useEffect(() => {
+        const handleSync = (e) => {
+            if (!e.detail) return
+            const { review, rating, googleId } = e.detail
+            if (googleId === props.bookData.googleId) {
+                setSubmitted(true)
+                props.getReviews()
+                setReview(review)
+                setRating(rating)
+
+            }
+
+        }
+        window.addEventListener('REVIEW_SAVED', handleSync)
+        return () => { window.removeEventListener('REVIEW_SAVED', handleSync) }
+    }, [props.bookData.googleId])
     return (
 
         <div>

@@ -2,6 +2,7 @@ import { use, useEffect, useState } from "react"
 import { useUser } from "./contexts/UserContext"
 import { useNavigate } from "react-router-dom"
 import "./BookModal.css"
+import { addToQueue } from "./utils/db"
 function BookModal(props) {
     const [bookshelves, setBookshelves] = useState([])
     const [selectedBookshelf, setSelectedBookshelf] = useState("")
@@ -13,6 +14,11 @@ function BookModal(props) {
         props.setIsClicked(false)
     }
     const fetchShelfOption = async () => {
+        if (!navigator.onLine) {
+            setShelfOptions(["WanttoRead", "CurrentlyReading", "Read"])
+
+            return
+        }
         try {
             const res = await fetch("http://localhost:3000/shelves", {
                 credentials: "include",
@@ -24,6 +30,12 @@ function BookModal(props) {
         }
     }
     const fetchBookshelves = async () => {
+
+        if (!navigator.onLine) {
+
+
+            return
+        }
         try {
             const res = await fetch("http://localhost:3000/bookshelf", {
                 credentials: "include",
@@ -35,6 +47,12 @@ function BookModal(props) {
         }
     }
     async function fetchBooksInShelves() {
+        if (!navigator.onLine) {
+
+
+            return
+        }
+
         try {
             const res = await fetch('http://localhost:3000/user-bookshelves', {
                 method: 'GET',
@@ -66,25 +84,35 @@ function BookModal(props) {
     }, [props.modalBook.googleId])
     const addToBookshelf = async (e) => {
         const selected = e.target.value
-        console.log(selected)
         if (!selected) {
             return alert("Please select a bookshelf")
         }
         setSelectedBookshelf(selected)
-        localStorage.setItem(`${user.user.id}shelf for ${props.modalBook.title}`, selected)
+        // localStorage.setItem(`${user.user.id}shelf for ${props.modalBook.title}`, selected)
+        const bookData = {
+            title: props.modalBook.title,
+            author: props.modalBook.author,
+            cover: props.modalBook.cover,
+            description: props.modalBook.description,
+            googleId: props.modalBook.googleId,
+            bookshelfId: selected,
+            userId: user.user.id
+
+        }
+        if (!navigator.onLine) {
+            alert("You are offline, We'll sync this when you come online")
+            await addToQueue({ type: "ADD_TO_SHELF", data: bookData })
+
+            return
+        }
         try {
             const res = await fetch("http://localhost:3000/bookshelf/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({
-                    title: props.modalBook.title,
-                    author: props.modalBook.author,
-                    cover: props.modalBook.cover,
-                    description: props.modalBook.description,
-                    googleId: props.modalBook.googleId,
-                    bookshelfId: selected
-                }),
+                body: JSON.stringify(
+                    bookData
+                ),
             });
             const data = await res.json();
             fetchBookshelves()
