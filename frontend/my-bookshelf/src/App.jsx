@@ -10,11 +10,14 @@ import BookShelf from './BookShelf'
 import Goals from './Goals'
 import ReflectionPage from './ReflectionPage'
 import { getQueue, initDB, syncQueue } from './utils/db'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Bounce } from 'react-toastify';
 function App() {
   const { user, setUser } = useUser()
   const [currUser, setCurrUser] = useState("")
   const ProtectedHome = WithAuth(Home);
-  const ProtectedBookshelf = WithAuth(BookShelf);
+  const ProtectedBookshelf = WithAuth(BookShelf)
 
   useEffect(() => {
     fetch("http://localhost:3000/me", { credentials: "include" })
@@ -35,6 +38,7 @@ function App() {
     }
     window.addEventListener("online", handleOnline)
     if (navigator.onLine) {
+      // toast.info("You are online!")
       syncQueue()
 
     }
@@ -45,18 +49,54 @@ function App() {
   }
 
     , [])
+  if (!navigator.onLine) {
+    toast.info('You are currently offline');
+  }
+  useEffect(() => {
+    const handleOffline = () => {
+      toast.info('You are offline')
+
+    };
+    const handleOnline = () => toast.info('Back online!');
+
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
+
+    return () => {
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
+    };
+  }, []);
+
+
   return (
-    <BrowserRouter>
-      <Routes >
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<ProtectedHome currUser={currUser} />} />
-        <Route path="/mybookshelf" element={<ProtectedBookshelf currUser={currUser} />}></Route>
-        <Route path="/goal" element={<Goals />} />
-        <Route path="/books/:googleId/reflection" element={<ReflectionPage />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <Routes >
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/home" element={<ProtectedHome currUser={currUser} />} />
+          <Route path="/mybookshelf" element={<ProtectedBookshelf currUser={currUser} />}></Route>
+          <Route path="/goal" element={<Goals />} />
+          <Route path="/books/:googleId/reflection" element={<ReflectionPage />} />
+
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce} />
+    </>
+
   )
 }
 export default App

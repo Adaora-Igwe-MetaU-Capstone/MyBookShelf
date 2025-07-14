@@ -8,6 +8,8 @@ import Sidebar from "./Sidebar";
 import QuoteBanner from "./QuoteBanner";
 import { useUser } from './contexts/UserContext';
 import { saveBookstoDB, getBooksFromDB } from "./utils/db";
+import { toast } from 'react-toastify';
+
 function Home(props) {
     const [searchInput, setSearchInput] = useState("")
     const [searchResults, setSearchResults] = useState([])
@@ -69,6 +71,7 @@ function Home(props) {
     }
     return (
         <div>
+
             <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}></Sidebar>
             <div id="main" className={isSidebarOpen === true ? "main-sidebar-open" : "main"}><Header toggleSidebar={toggleSidebar} ></Header>
                 <QuoteBanner></QuoteBanner>

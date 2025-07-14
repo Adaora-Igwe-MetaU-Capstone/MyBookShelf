@@ -1,8 +1,9 @@
 import { openDB } from "idb";
-
+import { toast } from 'react-toastify';
 const DB_NAME = "my-bookshelf";
 const STORE_NAME = 'homepageBooks';
 const QUEUE_STORE = 'offlineQueue'
+const REVIEW_STORE = 'reviewsByBooks'
 export const initDB = async () => {
     return openDB(DB_NAME, 1, {
         upgrade(db) {
@@ -12,6 +13,9 @@ export const initDB = async () => {
             if (!db.objectStoreNames.contains(QUEUE_STORE)) {
                 db.createObjectStore(QUEUE_STORE, { autoIncrement: true })
             }
+            // if (!db.objectStoreNames.contains(REVIEW_STORE)) {
+            //     db.createObjectStore(REVIEW_STORE)
+            // }
         }
     })
 
@@ -26,7 +30,19 @@ export const getBooksFromDB = async () => {
     return db.get(STORE_NAME, 'books')
 }
 
-
+// // save reviews for a book
+// export const saveReviewsToDB = async (bookId, reviews) => {
+//     const db = await initDB();
+//     const tx = db.transaction('reviewsByBooks', 'readwrite')
+//     await tx.store.put({ reviews, id: bookId })
+// }
+// // get reviews for a book
+// export const getReviewsFromDB = async (bookId) => {
+//     const db = await initDB();
+//     const tx = db.transaction('reviewsByBooks', 'readonly')
+//     const reviews = await tx.store.get(bookId)
+//     return reviews?.reviews || []
+// }
 export const addToQueue = async (action) => {
     const db = await initDB()
     const tx = db.transaction(QUEUE_STORE, 'readwrite')
@@ -75,7 +91,9 @@ export const syncQueue = async () => {
     const tx = db.transaction(QUEUE_STORE, 'readonly')
     const keys = await tx.store.getAllKeys()
     const actions = await tx.store.getAll()
+    console.log(actions)
     const deduplicatedActions = deduplicate(actions)
+    console.log(deduplicatedActions)
     for (let i = 0; i < deduplicatedActions.length; i++) {
         const action = deduplicatedActions[i]
         try {
@@ -86,6 +104,7 @@ export const syncQueue = async () => {
                     credentials: "include",
                     body: JSON.stringify(action.data)
                 })
+                toast.success(`Book added to ${action.data.bookshelfId}`)
             }
             else if (action.type === "SAVE_REFLECTION") {
                 const res = await fetch('http://localhost:3000/reflection', {
@@ -103,6 +122,7 @@ export const syncQueue = async () => {
                             googleId: action.data.googleId
                         }
                     }));
+                    toast.success("Reflection saved successfully")
 
                 }
             }
@@ -122,6 +142,7 @@ export const syncQueue = async () => {
                             googleId: action.data.googleId
                         }
                     }));
+                    toast.success("Review submitted successfully")
 
                 }
             } else if (action.type === "EDIT_REVIEW") {
@@ -142,6 +163,7 @@ export const syncQueue = async () => {
                             googleId: action.data.googleId
                         }
                     }));
+                    toast.success("Review submitted successfully")
 
                 }
             } else if (action.type === "SAVE_GOAL") {
@@ -166,6 +188,7 @@ export const syncQueue = async () => {
                             userId: action.data.userId
                         }
                     }));
+                    toast.success("Goal set!")
 
 
                 }
