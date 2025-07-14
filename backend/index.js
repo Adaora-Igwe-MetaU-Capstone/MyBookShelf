@@ -9,6 +9,7 @@ const bookShelfRoutes = require("./routes/bookshelf");
 const goalRoutes = require("./routes/goals");
 const reflectionRoutes = require("./routes/reflection");
 const reviewRoutes = require("./routes/reviews");
+const recommendationRoutes = require("./routes/recommendations");
 require("dotenv").config();
 app.use(express.json());
 app.use(
@@ -29,6 +30,7 @@ app.use("/", bookShelfRoutes)
 app.use("/", goalRoutes)
 app.use("/", reflectionRoutes)
 app.use("/", reviewRoutes)
+app.use("/recommendations", recommendationRoutes)
 
 
 app.listen(PORT, () => {

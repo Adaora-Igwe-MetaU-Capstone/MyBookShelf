@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import './App.css'
 import SignUp from './SignUp'
 import Login from './Login'
@@ -9,11 +9,13 @@ import Home from './Home'
 import BookShelf from './BookShelf'
 import Goals from './Goals'
 import ReflectionPage from './ReflectionPage'
+import { getQueue, initDB, syncQueue } from './utils/db'
 function App() {
   const { user, setUser } = useUser()
   const [currUser, setCurrUser] = useState("")
   const ProtectedHome = WithAuth(Home);
   const ProtectedBookshelf = WithAuth(BookShelf);
+
   useEffect(() => {
     fetch("http://localhost:3000/me", { credentials: "include" })
       .then((response) => response.json())
@@ -24,6 +26,25 @@ function App() {
         }
       });
   }, []);
+
+  useEffect(() => {
+    const handleOnline = () => {
+
+      syncQueue()
+      console.log("Back Online!")
+    }
+    window.addEventListener("online", handleOnline)
+    if (navigator.onLine) {
+      syncQueue()
+
+    }
+    return () => {
+      window.removeEventListener("online", handleOnline)
+    }
+
+  }
+
+    , [])
   return (
     <BrowserRouter>
       <Routes >
