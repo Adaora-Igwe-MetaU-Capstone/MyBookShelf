@@ -7,7 +7,7 @@ fs.createReadStream('google_books_dataset.csv')
     .pipe(csv())
     .on('data', (data) => {
         const rating = parseFloat(data.averageRating);
-        if (data.title && data.categories && !isNaN(rating) && rating >= 3.5) {
+        if (data.title && data.categories && !isNaN(rating) && rating >= 3) {
             const cleanedCategories = data.categories
                 .split(/[\/,]/)
                 .map(cat => cat.trim().toLowerCase());

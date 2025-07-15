@@ -42,7 +42,6 @@ function Home(props) {
         } else {
             const cached = await getBooksFromDB()
             if (cached) {
-
                 setPopularBooks(cached)
             } else {
                 alert("No offline data found")
