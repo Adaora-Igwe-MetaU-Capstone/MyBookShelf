@@ -3,6 +3,8 @@ import { useUser } from "./contexts/UserContext"
 import { useNavigate } from "react-router-dom"
 import "./BookModal.css"
 import { addToQueue } from "./utils/db"
+import { toast } from 'react-toastify';
+
 function BookModal(props) {
     const [bookshelves, setBookshelves] = useState([])
     const [selectedBookshelf, setSelectedBookshelf] = useState("")
@@ -85,10 +87,9 @@ function BookModal(props) {
     const addToBookshelf = async (e) => {
         const selected = e.target.value
         if (!selected) {
-            return alert("Please select a bookshelf")
+            return toast.error("Please select a bookshelf")
         }
         setSelectedBookshelf(selected)
-        // localStorage.setItem(`${user.user.id}shelf for ${props.modalBook.title}`, selected)
         const bookData = {
             title: props.modalBook.title,
             author: props.modalBook.author,
@@ -100,7 +101,7 @@ function BookModal(props) {
 
         }
         if (!navigator.onLine) {
-            alert("You are offline, We'll sync this when you come online")
+            toast.info("You are offline, We'll sync this when you come online")
             await addToQueue({ type: "ADD_TO_SHELF", data: bookData })
 
             return
@@ -116,10 +117,10 @@ function BookModal(props) {
             });
             const data = await res.json();
             fetchBookshelves()
-            alert("Book added to bookshelf")
+            toast.success(`Book added to ${selected}`)
         } catch (err) {
             console.error("Error adding book to bookshelf", err)
-            alert("Error adding book to bookshelf")
+            toast.error("Error adding book to bookshelf")
         }
     }
     return (
@@ -134,8 +135,7 @@ function BookModal(props) {
                         <h4>{props.modalBook.author}</h4>
                         <button className="see-more" onClick={() => navigate(`/books/${props.modalBook.googleId}/reflection`, { state: props.modalBook })}>See Reviews</button></div>
 
-                    {/* <a href={props.modalBook.barnesandNobleLink}>Buy on Barnes & Noble</a>
-                    <a href={props.modalBook.amazonLink}>Buy on Amazon</a> */}
+
 
                 </div>
 

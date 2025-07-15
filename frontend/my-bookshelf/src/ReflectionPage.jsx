@@ -5,6 +5,7 @@ import ReviewForm from "./ReviewForm"
 import ReviewsPage from "./ReviewsPage"
 import { useUser } from "./contexts/UserContext"
 import { addToQueue } from "./utils/db"
+import { toast } from 'react-toastify';
 function ReflectionPage(props) {
     const location = useLocation()
     const bookData = location.state
@@ -51,7 +52,7 @@ function ReflectionPage(props) {
         }
         if (!navigator.onLine) {
             await addToQueue({ type: "SAVE_REFLECTION", data: data })
-            alert("You are offline, We'll sync this when you come online")
+            toast.info("You are offline, We'll sync this when you come online")
             return
         }
         try {
@@ -64,11 +65,11 @@ function ReflectionPage(props) {
                 body: JSON.stringify(data)
             })
             if (res && res.ok) {
-                alert("Reflection saved successfully")
+                toast.success("Reflection saved successfully")
                 setEditMode(false)
                 setExistingReflection(true)
             } else {
-                alert("Error saving reflection")
+                toast.error("Error saving reflection")
             }
         } catch (err) {
             console.error(err)

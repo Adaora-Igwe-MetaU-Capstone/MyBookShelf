@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useUser } from "./contexts/UserContext"
 import { addToQueue } from "./utils/db"
-
+import { toast } from 'react-toastify';
 function ReviewsPage(props) {
     const [editMode, setEditMode] = useState(false)
     const [content, setContent] = useState()
@@ -30,7 +30,7 @@ function ReviewsPage(props) {
         if (!navigator.onLine) {
             await addToQueue({ type: "EDIT_REVIEW", data: data })
 
-            alert("You are offline, We'll sync this when you come online")
+            toast.info("You are offline, We'll sync this when you come online")
             setEditMode(false)
             return
         }
@@ -41,10 +41,11 @@ function ReviewsPage(props) {
             body: JSON.stringify(data)
         })
         if (res.ok) {
+            toast.success("Review edited successfully")
             setEditMode(false)
             props.getReviews()
         } else {
-            alert('Something went wrong')
+            toast.error('Something went wrong')
         }
     }
     useEffect(() => {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { addToQueue } from "./utils/db"
-
+import { toast } from 'react-toastify';
 function GoalForm(props) {
     const currentYear = new Date().getFullYear()
     const [isEditing, setIsEditing] = useState(false)
@@ -14,7 +14,7 @@ function GoalForm(props) {
         const data = { year: currentYear, target, isPublic }
         if (!navigator.onLine) {
             await addToQueue({ type: "SAVE_GOAL", data: data })
-            alert("You are offline, We'll sync this when you come online")
+            toast.info("You are offline, We'll sync this when you come online")
             return
         }
 

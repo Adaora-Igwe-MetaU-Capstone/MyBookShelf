@@ -19,7 +19,7 @@ function ReviewForm(props) {
         }
         if (!navigator.onLine) {
             await addToQueue({ type: "ADD_REVIEW", data: data })
-            alert("You are offline, We'll sync this when you come online")
+            toast.info("You are offline, We'll sync this when you come online")
             return
         }
         try {
@@ -32,9 +32,9 @@ function ReviewForm(props) {
             if (res.ok) {
                 setSubmitted(() => true)
                 props.getReviews()
-                alert("Review submitted successfully")
+                toast.success("Review submitted successfully")
             } else {
-                alert("Error submitting review")
+                toast.error("Error submitting review")
 
             }
         } catch (err) {
