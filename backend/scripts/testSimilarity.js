@@ -12,12 +12,13 @@ const books = JSON.parse(
 );
 
 // Pick two books to test
-const bookA = books.find(b => b.title.toLowerCase().includes('angels'));
+const bookA = books.find(b => b.title.toLowerCase().includes('harry potter'));
 
-const bookB = books.find(b => b.title.toLowerCase().includes('sushi'));
+const bookB = books.find(b => b.title.toLowerCase().includes('sherlock holmes'));
 
 
 if (!bookA || !bookB) {
+    console.log('❌ Error: Could not find books to test')
     process.exit(1);
 }
 

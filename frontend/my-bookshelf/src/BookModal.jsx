@@ -97,7 +97,8 @@ function BookModal(props) {
             description: props.modalBook.description,
             googleId: props.modalBook.googleId,
             bookshelfId: selected,
-            userId: user.user.id
+            userId: user.user.id,
+            genres: props.modalBook.genres
 
         }
         if (!navigator.onLine) {
