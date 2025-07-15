@@ -16,7 +16,8 @@ function BookList(props) {
                             bookCover={info.imageLinks?.thumbnail}
                             bookTitle={info.title}
                             bookAuthor={info.authors?.join(", ")}
-                            bookDescription={info.description} />
+                            bookDescription={info.description}
+                            genres={info.categories} />
                     </div>
                 )
             })}
