@@ -22,7 +22,7 @@ router.post('/reflection', async (req, res) => {
                 name: "Read"
             }
         })
-        console.log("shelf", shelf)
+
         if (!book) {
             book = await prisma.book.create({
                 data: {
@@ -54,7 +54,7 @@ router.post('/reflection', async (req, res) => {
                 content: content,
             },
         });
-        console.log(reflection)
+
         res.json(reflection);
     } catch (err) {
 
@@ -66,7 +66,6 @@ router.post('/reflection', async (req, res) => {
 router.get('/reflection/:googleId', async (req, res) => {
     const userId = req.session.userId;
     const googleId = req.params.googleId
-    console.log(userId, googleId)
     if (!userId) {
         return res.status(401).json({ error: "Not logged in." });
     }

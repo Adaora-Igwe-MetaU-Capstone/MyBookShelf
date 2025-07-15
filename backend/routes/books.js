@@ -26,11 +26,6 @@ router.get("/popular", async (req, res) => {
             }
         }
         const uniqueBooks = Array.from(uniqueBooksMap.values());
-        console.log('Combined books:', uniqueBooks);
-
-
-        // const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=subject:romance&orderBy=newest&maxResults=40&key=${ApiKey}`)
-        // const data = await response.json()
         res.json(uniqueBooks)
     } catch (err) {
         console.error("Error fetching books: ", err)

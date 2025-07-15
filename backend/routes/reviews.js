@@ -13,7 +13,6 @@ router.get('/reviews', async (req, res) => {
                 user: true
             }
         })
-        console.log(reviews)
         res.json(reviews)
     } catch (err) {
         res.status(500).json({ error: err })
@@ -59,7 +58,6 @@ router.post('/review', async (req, res) => {
                 rating: Number(rating)
             }
         })
-        console.log(review)
         res.json(review)
     } catch (err) {
         res.status(500).json({ error: err })

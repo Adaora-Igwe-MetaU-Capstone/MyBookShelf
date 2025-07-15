@@ -1,7 +1,6 @@
 import Book from "./Book";
 function BookList(props) {
     console.log(props.popularBooks)
-    // console.log(props.searchResults)
     return (
         <div className="book-list">
             {(props.searchResults.length > 0 ? props.searchResults : props.popularBooks).map((book) => {
