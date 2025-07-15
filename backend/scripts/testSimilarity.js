@@ -10,19 +10,14 @@ const {
 const books = JSON.parse(
     fs.readFileSync(path.join(__dirname, '../data/cleaned_books.json'))
 );
-console.log(books.length, 'books loaded')
-books.slice(0, 10).forEach(b => console.log(b.title));
 
 // Pick two books to test
 const bookA = books.find(b => b.title.toLowerCase().includes('angels'));
-console.log('Found bookA:', bookA?.title);
 
 const bookB = books.find(b => b.title.toLowerCase().includes('sushi'));
-console.log('Found bookB:', bookB?.title);
 
 
 if (!bookA || !bookB) {
-    console.log('❌ One or both test books not found.');
     process.exit(1);
 }
 
