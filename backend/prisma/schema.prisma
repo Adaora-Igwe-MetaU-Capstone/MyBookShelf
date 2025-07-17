@@ -83,3 +83,16 @@ model Review{
   rating Int
   @@unique([userId, googleId])
 }
+
+model RecBook {
+  id             String   @id @default(cuid())
+  googleId     String   @unique
+  title          String
+  description    String?
+  authors        String[]
+  categories     String[]
+  averageRating  Float?
+  maturityRating String?
+  pageCount      Int?
+  categoryVector Json?
+}
