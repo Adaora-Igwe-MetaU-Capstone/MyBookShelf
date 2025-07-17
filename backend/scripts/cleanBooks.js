@@ -2,9 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-
 const books = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/cleaned_books.json')));
-
 (async () => {
     for (const book of books) {
         await prisma.recBook.upsert({
@@ -32,6 +30,5 @@ const books = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/cleaned_b
             },
         });
     }
-    console.log('Books upserted with category vectors!');
     await prisma.$disconnect();
 })();
