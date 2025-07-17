@@ -30,19 +30,7 @@ export const getBooksFromDB = async () => {
     return db.get(STORE_NAME, 'books')
 }
 
-// // save reviews for a book
-// export const saveReviewsToDB = async (bookId, reviews) => {
-//     const db = await initDB();
-//     const tx = db.transaction('reviewsByBooks', 'readwrite')
-//     await tx.store.put({ reviews, id: bookId })
-// }
-// // get reviews for a book
-// export const getReviewsFromDB = async (bookId) => {
-//     const db = await initDB();
-//     const tx = db.transaction('reviewsByBooks', 'readonly')
-//     const reviews = await tx.store.get(bookId)
-//     return reviews?.reviews || []
-// }
+
 export const addToQueue = async (action) => {
     const db = await initDB()
     const tx = db.transaction(QUEUE_STORE, 'readwrite')
@@ -74,15 +62,6 @@ const deduplicate = (queue) => {
     for (let action of queue) {
         const key = `${action.type}-${action?.data?.googleId || ''}`
         seen.set(key, action)
-        // if (seen.has(key)) {
-        //     const existingIndex = result.findIndex((a) => `${a.type}-${a?.data?.googleId || ''}` === key)
-        //     if (existingIndex !== 1) {
-        //         result[existingIndex] = action
-        //     }
-        // } else {
-        //     seen.set(key, true)
-        //     result.push(action)
-        // }
     }
     return Array.from(seen.values())
 }
