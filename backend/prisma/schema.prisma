@@ -40,7 +40,7 @@ title String
   author String?
   cover String?
   description String?
-  genres String?
+  genres String[]
   bookshelf Bookshelf? @relation("BooksOnShelf", fields: [bookshelfId], references: [id])
   bookshelfId Int?
   googleId String  @id

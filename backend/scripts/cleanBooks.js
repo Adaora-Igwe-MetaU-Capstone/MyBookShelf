@@ -1,25 +1,45 @@
 const fs = require('fs');
 const csv = require('csv-parser');
-
 const results = [];
-
-fs.createReadStream('google_books_dataset.csv')
+const seenBooks = new Set();
+function parseArrayString(str) {
+    try {
+        const fixedStr = str.replace(/'/g, '"');
+        return JSON.parse(fixedStr);
+    } catch {
+        return [];
+    }
+}
+fs.createReadStream('GoogleBookAPIDataset 2.csv')
     .pipe(csv())
     .on('data', (data) => {
-        const rating = parseFloat(data.averageRating);
-        if (data.title && data.categories && !isNaN(rating) && rating >= 3) {
-            const cleanedCategories = data.categories
-                .split(/[\/,]/)
-                .map(cat => cat.trim().toLowerCase());
-
-            results.push({
-                title: data.title.trim(),
-                categories: cleanedCategories,
-                averageRating: rating,
-            });
-        }
+        const title = data['title']?.trim();
+        const authorsRaw = data['authors'] || '[]';
+        const categoriesRaw = data['categories'] || '[]';
+        const rating = parseFloat(data['averageRating']);
+        if (!title || isNaN(rating) || rating < 3) return;
+        const authors = parseArrayString(authorsRaw).map(a => a.trim().toLowerCase());
+        const categories = parseArrayString(categoriesRaw).map(c => c.trim().toLowerCase());
+        if (authors.length === 0) return;
+        const bookKey = `${title.toLowerCase()}|${authors[0]}`;
+        if (seenBooks.has(bookKey)) return;
+        seenBooks.add(bookKey);
+        const book = {
+            id: data['id'],
+            title,
+            authors,
+            categories,
+            averageRating: rating,
+            maturityRating: data['maturityRating'],
+            publishedDate: data['publishedDate'],
+            pageCount: parseInt(data['pageCount']) || 0,
+            description: data['desc']?.trim() || '',
+        };
+        results.push(book);
     })
     .on('end', () => {
         fs.writeFileSync('cleaned_books.json', JSON.stringify(results, null, 2));
-        console.log('✅ Cleaned data saved to cleaned_books.json');
+    })
+    .on('error', (err) => {
+        console.error('Error reading CSV:', err);
     });

@@ -3,12 +3,12 @@ function Book(props) {
     const modalBookObject = {
         title: props.bookTitle,
         author: props.bookAuthor,
-        genre: props.bookGenre,
         cover: props.bookCover,
         description: props.bookDescription,
         amazonLink: `https://www.amazon.com/s?k=${encodeURIComponent(props.bookTitle + ' ' + props.bookAuthor)}`,
         barnesandNobleLink: `https://www.barnesandnoble.com/s/${encodeURIComponent(props.bookTitle + ' ' + props.bookAuthor)}`,
-        googleId: props.googleId
+        googleId: props.googleId,
+        genres: props.genres
     }
     const modalDisplay = () => {
         props.setIsClicked(true)

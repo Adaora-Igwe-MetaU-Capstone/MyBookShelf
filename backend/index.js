@@ -30,7 +30,7 @@ app.use("/", bookShelfRoutes)
 app.use("/", goalRoutes)
 app.use("/", reflectionRoutes)
 app.use("/", reviewRoutes)
-app.use("/recommendations", recommendationRoutes)
+app.use("/", recommendationRoutes)
 
 
 app.listen(PORT, () => {
