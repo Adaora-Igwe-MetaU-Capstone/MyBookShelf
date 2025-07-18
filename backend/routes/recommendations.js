@@ -14,7 +14,11 @@ router.get('/recs', async (req, res) => {
             where: { id: userId },
             include: {
                 bookshelves: {
-                    include: { books: true }
+                    include: {
+                        books: {
+                            include: { reviews: true }
+                        }
+                    }
                 }
             }
         });
@@ -22,26 +26,34 @@ router.get('/recs', async (req, res) => {
             return res.status(200).json([]);
         }
         const userBooks = userWithBooks.bookshelves.flatMap(bs => bs.books);
-
         if (userBooks.length === 0) {
             return res.status(200).json([]);
         }
-        console.log('userBooks:', userBooks);
-
-        const categoryList = getCategories(userBooks);
-        const enrichedUserBooks = addVectorsToBooks(userBooks, categoryList);
+        const normalizedBooks = userBooks.map(book => {
+            const userReview = book.reviews.find(r => r.userId === userId);
+            return {
+                ...book,
+                categories: book.categories || book.genres || [],
+                rating: userReview?.rating || 0,
+            }
+        });
+        const categoryList = getCategories(normalizedBooks);
+        const enrichedUserBooks = addVectorsToBooks(normalizedBooks, categoryList);
+        const highlyRated = enrichedUserBooks.filter(b => (b.rating ?? 0) >= 3);
+        const baseBooks = highlyRated.length > 0
+            ? highlyRated.sort((a, b) => b.rating - a.rating).slice(0, 5) // limit to top 5 if needed
+            : enrichedUserBooks;
         const userBookGoogleIds = enrichedUserBooks.map(b => b.googleId).filter(Boolean);
-        const otherBooksRaw = await prisma.recBook.findMany({
+        const recBooks = await prisma.recBook.findMany({
             where: {
                 googleId: {
                     notIn: userBookGoogleIds
                 }
             }
         });
-        const enrichedOtherBooks = addVectorsToBooks(otherBooksRaw, categoryList);
         let recs = [];
-        enrichedUserBooks.forEach(userBook => {
-            enrichedOtherBooks.forEach(otherBook => {
+        baseBooks.forEach(userBook => {
+            recBooks.forEach(otherBook => {
                 const similarity = getSimilarity(userBook, otherBook);
                 recs.push({ book: otherBook, similarity });
             });
@@ -56,10 +68,10 @@ router.get('/recs', async (req, res) => {
             .sort((a, b) => b.similarity - a.similarity)
             .slice(0, 10)
             .map(entry => entry.book);
+
         res.status(200).json(top);
     } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: "Something went wrong" });
+        res.status(500).json({ error: "Something went wrong" }, err);
     }
 });
 module.exports = router;

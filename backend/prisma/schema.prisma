@@ -85,7 +85,7 @@ model Review{
 }
 
 model RecBook {
-  id             String   @id @default(cuid())
+  id Int @id @default(autoincrement())
   googleId     String   @unique
   title          String
   description    String?

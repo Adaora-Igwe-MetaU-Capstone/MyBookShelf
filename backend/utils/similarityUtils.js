@@ -26,9 +26,6 @@ export function normalizeRating(rating, min = 1, max = 5) {
 
 function getSimilarity(bookA, bookB) {
     const categorySimilarity = cosineSimilarity(bookA.categoryVector, bookB.categoryVector);
-    // const vecA = vectorizeGenres(bookA.genres);
-    // const vecB = vectorizeGenres(bookB.genres);
-    // const categorySimilarity = cosineSimilarity(vecA, vecB);
     const authorSimilarity = getAuthorSimilarity(bookA, bookB);
     const ratingSimilarity = normalizeRating(bookB.averageRating)
 
