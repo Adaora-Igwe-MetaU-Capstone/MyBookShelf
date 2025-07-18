@@ -15,7 +15,7 @@ function BookList(props) {
                             googleId={book.id}
                             bookCover={info.imageLinks?.thumbnail}
                             bookTitle={info.title}
-                            bookAuthor={info.authors?.join(", ")}
+                            bookAuthor={info.authors}
                             bookDescription={info.description}
                             genres={info.categories} />
                     </div>

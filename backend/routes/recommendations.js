@@ -26,10 +26,12 @@ router.get('/recs', async (req, res) => {
         if (userBooks.length === 0) {
             return res.status(200).json([]);
         }
+        console.log('userBooks:', userBooks);
+
         const categoryList = getCategories(userBooks);
         const enrichedUserBooks = addVectorsToBooks(userBooks, categoryList);
         const userBookGoogleIds = enrichedUserBooks.map(b => b.googleId).filter(Boolean);
-        const otherBooksRaw = await prisma.book.findMany({
+        const otherBooksRaw = await prisma.recBook.findMany({
             where: {
                 googleId: {
                     notIn: userBookGoogleIds
@@ -56,7 +58,7 @@ router.get('/recs', async (req, res) => {
             .map(entry => entry.book);
         res.status(200).json(top);
     } catch (err) {
-        console.error(err);
+        console.log(err);
         res.status(500).json({ error: "Something went wrong" });
     }
 });

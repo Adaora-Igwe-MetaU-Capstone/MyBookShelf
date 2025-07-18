@@ -15,8 +15,8 @@ export function cosineSimilarity(a, b) {
 }
 
 export function getAuthorSimilarity(bookA, bookB) {
-    if (!bookA.author || !bookB.author) return 0;
-    return bookA.author == bookB.author ? 1 : 0;
+    if (!bookA.authors || !bookB.authors) return 0;
+    return bookA.authors == bookB.authors ? 1 : 0;
 }
 
 export function normalizeRating(rating, min = 1, max = 5) {
@@ -30,7 +30,7 @@ function getSimilarity(bookA, bookB) {
     // const vecB = vectorizeGenres(bookB.genres);
     // const categorySimilarity = cosineSimilarity(vecA, vecB);
     const authorSimilarity = getAuthorSimilarity(bookA, bookB);
-    const ratingSimilarity = normalizeRating(bookB.averagerating)
+    const ratingSimilarity = normalizeRating(bookB.averageRating)
 
     return (
         categorySimilarity * 0.6 +

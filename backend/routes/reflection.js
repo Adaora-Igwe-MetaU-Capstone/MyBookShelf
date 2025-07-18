@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 router.post('/reflection', async (req, res) => {
 
     const userId = req.session.userId;
-    const { googleId, content, title, author, cover, description } = req.body;
+    const { googleId, content, title, authors, cover, description } = req.body;
     if (!userId) {
         return res.status(401).json({ error: "Not logged in." });
     }
@@ -28,7 +28,7 @@ router.post('/reflection', async (req, res) => {
                 data: {
                     googleId,
                     title,
-                    author,
+                    authors,
                     cover,
                     description,
                     bookshelf: {

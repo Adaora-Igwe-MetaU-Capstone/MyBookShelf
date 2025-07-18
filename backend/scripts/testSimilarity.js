@@ -7,9 +7,7 @@ const {
     getSimilarity,
 } = require('../utils/similarityUtils');
 
-const books = JSON.parse(
-    fs.readFileSync(path.join(__dirname, '../data/cleaned_books.json'))
-);
+const books = await Prisma.recBook.findMany()
 
 // Pick two books to test
 const bookA = books.find(b => b.title.toLowerCase().includes('harry potter'));
