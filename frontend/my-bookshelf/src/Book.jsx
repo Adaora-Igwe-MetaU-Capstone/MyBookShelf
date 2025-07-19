@@ -13,7 +13,6 @@ function Book(props) {
     const modalDisplay = () => {
         props.setIsClicked(true)
         props.setModalBook(modalBookObject)
-        console.log(modalBookObject)
     }
     return (
         <div className="book" onClick={modalDisplay}>

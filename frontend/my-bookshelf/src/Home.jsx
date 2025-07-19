@@ -10,6 +10,7 @@ import { useUser } from './contexts/UserContext';
 import { saveBookstoDB, getBooksFromDB } from "./utils/db";
 import { toast } from 'react-toastify';
 import BookFlippingLoader from "./BookFlippingLoader";
+import BookRecs from "./BookRecs";
 function Home(props) {
     const [searchInput, setSearchInput] = useState("")
     const [searchResults, setSearchResults] = useState([])
@@ -18,6 +19,7 @@ function Home(props) {
     const [modalBook, setModalBook] = useState({})
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    const [bookRecs, setBookRecs] = useState([])
     const ApiKey = import.meta.env.VITE_API_KEY;
     const { user, setUser } = useUser()
     const toggleSidebar = () => {
@@ -26,6 +28,20 @@ function Home(props) {
     function handleFormChange(e) {
         setSearchInput(() => e.target.value)
     }
+    async function fetchRecs() {
+        try {
+            const url = `http://localhost:3000/recs`;
+            const response = await fetch(url, {
+                method: 'GET',
+                credentials: 'include'
+            });
+            const data = await response.json();
+            setBookRecs(data);
+        } catch (err) {
+            alert('Error fetching recommendations');
+        }
+    }
+
     async function fetchPopularBooks() {
         if (navigator.onLine) {
             try {
@@ -51,6 +67,7 @@ function Home(props) {
     }
     useEffect(() => {
         fetchPopularBooks()
+        fetchRecs()
     }, [])
     async function fetchBookSearch() {
         const url = `http://localhost:3000/search?q=${searchInput}`
@@ -84,8 +101,15 @@ function Home(props) {
                 <div>{isLoading && (
                     <BookFlippingLoader />
                 )}</div>
+                {bookRecs && <BookRecs
+                    isClicked={isClicked}
+                    setIsClicked={setIsClicked}
+                    setModalBook={setModalBook}
+                    modalBook={modalBook}
+                    bookRecs={bookRecs}></BookRecs>}
                 <BookList isClicked={isClicked}
-                    setIsClicked={setIsClicked} popularBooks={popularBooks}
+                    setIsClicked={setIsClicked}
+                    popularBooks={popularBooks}
                     searchResults={searchResults}
                     modalBook={modalBook}
                     setModalBook={setModalBook}></BookList>

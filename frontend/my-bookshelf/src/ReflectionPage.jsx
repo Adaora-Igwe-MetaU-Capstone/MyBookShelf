@@ -72,7 +72,7 @@ function ReflectionPage(props) {
                 toast.error("Error saving reflection")
             }
         } catch (err) {
-            console.error(err)
+            toast.error(err.message)
 
         }
     }

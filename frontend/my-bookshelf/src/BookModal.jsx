@@ -28,7 +28,6 @@ function BookModal(props) {
             const data = await res.json();
             setShelfOptions(data)
         } catch (err) {
-            console.error("Error fetching bookshelves", err)
         }
     }
     const fetchBookshelves = async () => {
@@ -45,7 +44,7 @@ function BookModal(props) {
             const data = await res.json();
             setBookshelves(data);
         } catch (err) {
-            console.error("Error fetching bookshelves", err)
+            toast.error("Error fetching bookshelves", err)
         }
     }
     async function fetchBooksInShelves() {
@@ -70,7 +69,7 @@ function BookModal(props) {
             }
 
         } catch (err) {
-            console.error("Error fetching bookshelves", err)
+            toast.error("Error fetching bookshelves", err)
         }
         if (props.modalBook.googleId) {
             fetchBooksInShelves()
@@ -83,7 +82,6 @@ function BookModal(props) {
     }, [])
     useEffect(() => {
         fetchBooksInShelves()
-        console.log(props.modalBook)
     }, [props.modalBook.googleId])
     const addToBookshelf = async (e) => {
         const selected = e.target.value
@@ -121,7 +119,6 @@ function BookModal(props) {
             fetchBookshelves()
             toast.success(`Book added to ${selected}`)
         } catch (err) {
-            console.error("Error adding book to bookshelf", err)
             toast.error("Error adding book to bookshelf")
         }
     }

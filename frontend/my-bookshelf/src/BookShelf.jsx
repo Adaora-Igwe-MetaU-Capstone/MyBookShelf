@@ -15,7 +15,7 @@ function BookShelf() {
             const data = await res.json()
             setBookshelves(data)
         } catch (err) {
-            console.error("Error fetching bookshelves", err)
+            toast.error("Error fetching bookshelves", err)
         }
     }
     const goBackHome = () => {
