@@ -1,10 +1,9 @@
 import Book from "./Book";
-function BookList(props) {
+function SearchResults(props) {
     return (
         <div>
-            <h1 className="book-category">More</h1>
             <div className="book-list">
-                {(props.popularBooks).map((book) => {
+                {(props.searchResults).map((book) => {
                     const info = book.volumeInfo;
                     return (
                         <div key={book.id}>
@@ -25,4 +24,4 @@ function BookList(props) {
             </div></div>
     )
 }
-export default BookList;
+export default SearchResults;

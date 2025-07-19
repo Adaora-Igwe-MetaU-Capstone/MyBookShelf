@@ -16,9 +16,11 @@ function Book(props) {
     }
     return (
         <div className="book" onClick={modalDisplay}>
-            <img src={props.bookCover} alt="" />
-            <h2>{props.bookTitle}</h2>
-            <p>{props.bookAuthor}</p>
+            <img src={props.bookCover} alt="bookcover" className='book-cover' />
+            <div className='details'>
+                <h2 className='book-title'>{props.bookTitle}</h2>
+                <p className='author'>{props.bookAuthor}</p>
+            </div>
         </div>
     )
 }

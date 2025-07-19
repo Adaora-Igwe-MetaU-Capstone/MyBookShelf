@@ -1,19 +1,44 @@
 const express = require("express");
 const router = express.Router();
+router.get("/home-sections", async (req, res) => {
+    const ApiKey = process.env.VITE_API_KEY;
+    const genres = ["fiction", "poetry", "fantasy", "romance"];
+    const result = {};
+
+    try {
+        for (const genre of genres) {
+            const response = await fetch(
+                `https://www.googleapis.com/books/v1/volumes?q=subject:${genre}&orderBy=newest&maxResults=10&key=${ApiKey}`
+            );
+            const data = await response.json();
+            // Add only if books exist
+            if (data.items) {
+                result[genre] = data.items;
+            } else {
+                result[genre] = [];
+            }
+        }
+        res.json(result);
+    } catch (err) {
+        console.error("Error fetching genre books:", err);
+        res.status(500).json({ error: "Failed to fetch genre books" });
+    }
+});
+
 // get popular books
 router.get("/popular", async (req, res) => {
     const ApiKey = process.env.VITE_API_KEY
     try {
-        const subjects = ['african', 'romance', 'mystery',
-            'fantasy', 'science fiction', 'thriller', 'horror',
+        const subjects = ['manga', 'african', 'mystery',
+            'science fiction', 'thriller', 'horror',
             'biography', 'history', 'self help', 'cooking',
             'spiritual',
-            'children', 'poetry', 'comics',
+            'children', 'comics',
             'graphic novels',];
         const allBooks = [];
 
         for (const subject of subjects) {
-            const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=subject:${subject}&orderBy=newest&maxResults=10&key=${ApiKey}`);
+            const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=subject:${subject}&orderBy=newest&maxResults=5&key=${ApiKey}`);
             const data = await response.json();
             if (data.items) {
                 allBooks.push(...data.items);
