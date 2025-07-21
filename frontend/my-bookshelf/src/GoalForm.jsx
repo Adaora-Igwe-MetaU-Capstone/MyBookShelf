@@ -17,7 +17,6 @@ function GoalForm(props) {
             toast.info("You are offline, We'll sync this when you come online")
             return
         }
-
         try {
             const res = await fetch('http://localhost:3000/goal', {
                 method: 'POST',
@@ -25,11 +24,10 @@ function GoalForm(props) {
                 body: JSON.stringify(data),
                 credentials: 'include'
             })
-            const data = await res.json()
             props.fetchGoal()
             props.fetchAllGoal()
         } catch (error) {
-            toast.error(error.message)
+            return
         }
     }
     useEffect(() => {
@@ -37,9 +35,6 @@ function GoalForm(props) {
             if (!e.detail) return
             props.fetchGoal()
             props.fetchAllGoal()
-
-
-
         }
         window.addEventListener('GOAL_SAVED', handleSync)
         return () => { window.removeEventListener('GOAL_SAVED', handleSync) }
@@ -51,7 +46,6 @@ function GoalForm(props) {
                 <input onChange={handleFormChange} value={target} type="number" /><br />
                 <label htmlFor="">Make goal pubic!</label>
                 <input className="is-public" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} type="checkbox" />
-
             </form>
             <button onClick={handleSubmit} type="submit">Save Goal</button>
         </div>

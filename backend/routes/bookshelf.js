@@ -27,7 +27,6 @@ router.get("/bookshelf", async (req, res) => {
 
 //ADD TO BOOKSHELF
 router.post("/bookshelf/add", async (req, res) => {
-
     const userId = req.session.userId;
     const { bookshelfId, description, title, authors, cover, googleId, genres } = req.body;
     const bookshelf = await prisma.bookshelf.findFirst({
@@ -37,28 +36,23 @@ router.post("/bookshelf/add", async (req, res) => {
     if (!bookshelf) {
         return res.status(403).json({ error: "Unauthorized Access" })
     }
-
     const newBook = await prisma.book.upsert({
-        where: { googleId },
+        where: { googleId: String(googleId) },
         update: {
             bookshelfId: bookshelf.id
         }, create: {
-            title, authors, cover, description, googleId, genres: Array.isArray(genres) ? genres : [],
+            title, authors, cover, description, googleId: String(googleId), genres: Array.isArray(genres) ? genres : [],
             bookshelf: {
                 connect: { id: bookshelf.id }
 
             }
         }
-
     })
-    console.log(req.body)
-    console.log(newBook)
     res.status(201).json(newBook);
 })
 
 // GET BOOKS IN BOOKSHELF
 router.get("/user-bookshelves", async (req, res) => {
-
     const userId = req.session.userId;
     if (!userId) {
         return res.status(401).json({ error: "Not Logged In" })
@@ -73,7 +67,6 @@ router.get("/user-bookshelves", async (req, res) => {
             groupedBooks[shelf.name] = shelf.books
         }
         res.json(groupedBooks)
-
     } catch (err) {
         console.error(err)
         res.status(500).json({ error: "Error fetching bookshelves" })

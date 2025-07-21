@@ -11,7 +11,6 @@ router.get("/home-sections", async (req, res) => {
                 `https://www.googleapis.com/books/v1/volumes?q=subject:${genre}&orderBy=newest&maxResults=10&key=${ApiKey}`
             );
             const data = await response.json();
-            // Add only if books exist
             if (data.items) {
                 result[genre] = data.items;
             } else {

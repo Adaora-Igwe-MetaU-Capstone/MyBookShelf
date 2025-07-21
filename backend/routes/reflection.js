@@ -14,7 +14,7 @@ router.post('/reflection', async (req, res) => {
     }
     try {
         let book = await prisma.book.findUnique({
-            where: { googleId }
+            where: { googleId: String(googleId) }
         })
         const shelf = await prisma.bookshelf.findFirst({
             where: {
@@ -26,7 +26,7 @@ router.post('/reflection', async (req, res) => {
         if (!book) {
             book = await prisma.book.create({
                 data: {
-                    googleId,
+                    googleId: String(googleId),
                     title,
                     authors,
                     cover,
@@ -42,7 +42,7 @@ router.post('/reflection', async (req, res) => {
             where: {
                 userId_googleId: {
                     userId: userId,
-                    googleId: googleId,
+                    googleId: String(googleId)
                 },
             },
             update: {
@@ -50,7 +50,7 @@ router.post('/reflection', async (req, res) => {
             },
             create: {
                 userId: userId,
-                googleId: googleId,
+                googleId: String(googleId),
                 content: content,
             },
         });

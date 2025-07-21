@@ -28,7 +28,6 @@ function getSimilarity(bookA, bookB) {
     const categorySimilarity = cosineSimilarity(bookA.categoryVector, bookB.categoryVector);
     const authorSimilarity = getAuthorSimilarity(bookA, bookB);
     const ratingSimilarity = normalizeRating(bookB.averageRating)
-
     return (
         categorySimilarity * 0.6 +
         authorSimilarity * 0.2 +

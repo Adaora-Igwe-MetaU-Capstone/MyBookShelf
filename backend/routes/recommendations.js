@@ -31,12 +31,29 @@ router.get('/recs', async (req, res) => {
         }
         const normalizedBooks = userBooks.map(book => {
             const userReview = book.reviews.find(r => r.userId === userId);
+            const shelf = userWithBooks.bookshelves.find(bs =>
+                bs.books.some(b => b.id === book.id)
+            );
+            const shelfName = shelf?.name?.toLowerCase() || '';
+            let inferredRating = userReview?.rating;
+            if (inferredRating == null) {
+                if (shelfName.includes('read')) {
+                    inferredRating = 3.5;
+                } else if (shelfName.includes('currently')) {
+                    inferredRating = 3.0;
+                } else if (shelfName.includes('want')) {
+                    inferredRating = 2.5;
+                } else {
+                    inferredRating = 2.0;
+                }
+            }
             return {
                 ...book,
                 categories: book.categories || book.genres || [],
-                rating: userReview?.rating || 0,
-            }
+                rating: inferredRating,
+            };
         });
+
         const categoryList = getCategories(normalizedBooks);
         const enrichedUserBooks = addVectorsToBooks(normalizedBooks, categoryList);
         const highlyRated = enrichedUserBooks.filter(b => (b.rating ?? 0) >= 3);
@@ -51,10 +68,13 @@ router.get('/recs', async (req, res) => {
                 }
             }
         });
+        // console.log("Inferred rating for", book.title, "=>", inferredRating);
+        // console.log("Base books:", baseBooks.map(b => b.title));
+
         let recs = [];
         baseBooks.forEach(userBook => {
             recBooks.forEach(otherBook => {
-                const similarity = getSimilarity(userBook, otherBook);
+                const similarity = getSimilarity(userBook, otherBook) * (userBook.rating / 5);
                 recs.push({ book: otherBook, similarity });
             });
         });
@@ -64,6 +84,7 @@ router.get('/recs', async (req, res) => {
                 deduped.set(book.googleId, { book, similarity });
             }
         });
+        // console.log(deduped)
         const top = Array.from(deduped.values())
             .sort((a, b) => b.similarity - a.similarity)
             .slice(0, 10)

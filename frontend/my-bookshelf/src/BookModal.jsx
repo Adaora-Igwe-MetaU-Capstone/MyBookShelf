@@ -78,7 +78,6 @@ function BookModal(props) {
     useEffect(() => {
         fetchBookshelves()
         fetchShelfOption()
-
     }, [])
     useEffect(() => {
         fetchBooksInShelves()
@@ -100,6 +99,7 @@ function BookModal(props) {
             genres: props.modalBook.genres
 
         }
+
         if (!navigator.onLine) {
             toast.info("You are offline, We'll sync this when you come online")
             await addToQueue({ type: "ADD_TO_SHELF", data: bookData })

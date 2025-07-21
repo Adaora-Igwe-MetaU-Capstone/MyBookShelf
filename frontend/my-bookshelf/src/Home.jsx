@@ -117,7 +117,13 @@ function Home(props) {
                 />
 
                 {searchResults.length > 0 ? (
-                    <SearchResults searchResults={searchResults} />
+                    <SearchResults
+                        isClicked={isClicked}
+                        setIsClicked={setIsClicked}
+                        popularBooks={popularBooks}
+                        modalBook={modalBook}
+                        setModalBook={setModalBook}
+                        searchResults={searchResults} />
                 ) : (
                     <>
                         {isLoading && <BookFlippingLoader />}
