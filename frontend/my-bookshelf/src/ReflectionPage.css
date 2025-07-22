@@ -1,0 +1,22 @@
+.buy-links {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.buy-links a {
+    text-decoration: none;
+    color: white;
+    background-color: #758467;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.buy-links a:hover {
+    background-color: #CBD5C0;
+    color: #fff;
+}

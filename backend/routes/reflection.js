@@ -6,7 +6,6 @@ const { connect } = require("./auth");
 const prisma = new PrismaClient();
 
 router.post('/reflection', async (req, res) => {
-
     const userId = req.session.userId;
     const { googleId, content, title, authors, cover, description } = req.body;
     if (!userId) {
@@ -22,7 +21,6 @@ router.post('/reflection', async (req, res) => {
                 name: "Read"
             }
         })
-
         if (!book) {
             book = await prisma.book.create({
                 data: {
@@ -37,7 +35,6 @@ router.post('/reflection', async (req, res) => {
                 }
             })
         }
-
         const reflection = await prisma.reflection.upsert({
             where: {
                 userId_googleId: {
@@ -54,15 +51,12 @@ router.post('/reflection', async (req, res) => {
                 content: content,
             },
         });
-
         res.json(reflection);
     } catch (err) {
-
         console.error(err);
         res.status(500).json({ error: "Something went wrong." });
     }
 });
-
 router.get('/reflection/:googleId', async (req, res) => {
     const userId = req.session.userId;
     const googleId = req.params.googleId

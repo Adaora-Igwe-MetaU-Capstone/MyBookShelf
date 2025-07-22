@@ -104,6 +104,8 @@ function Home(props) {
                 toggleSidebar={toggleSidebar}
                 isSidebarOpen={isSidebarOpen}
                 setIsSidebarOpen={setIsSidebarOpen}
+                modalBook={modalBook}
+                setModalBook={setModalBook}
             />
             <div id="main" className={isSidebarOpen ? "main-sidebar-open" : "main"}>
                 <Header toggleSidebar={toggleSidebar} />
@@ -115,7 +117,6 @@ function Home(props) {
                     clearSearch={clearSearch}
                     searchInput={searchInput}
                 />
-
                 {searchResults.length > 0 ? (
                     <SearchResults
                         isClicked={isClicked}

@@ -78,7 +78,7 @@ function ReviewsPage(props) {
                     <div>
                         <strong>{review.user.username}</strong>
                         <p>{review.content}</p>
-                        <p>{review.rating}//5</p>
+                        <p>{review.rating}/5</p>
                         {review.user.username === user.user.username && !editMode && (
                             <button onClick={handleEdit}>Edit</button>
                         )}

@@ -11,7 +11,7 @@ function Sidebar(props) {
     };
     const navigate = useNavigate();
     const viewBookshelf = () => {
-        navigate("/mybookshelf")
+        navigate("/mybookshelf", { state: { modalBooks: props.modalBooks, setModalBooks: props.setModalBooks } })
     }
     const viewGoalPage = () => {
         navigate('/goal')
