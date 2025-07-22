@@ -4,10 +4,15 @@ import GoalCircle from "./GoalCircle"
 import './Goals.css'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { useNavigate } from "react-router-dom"
 function Goals() {
+    const navigate = useNavigate()
     const [goal, setGoal] = useState(null)
     const [allGoals, setAllGoals] = useState([])
     const [showAllGoals, setShowAllGoals] = useState(false)
+    const goBackHome = () => {
+        navigate("/home")
+    }
     async function fetchGoal() {
         const res = await fetch('http://localhost:3000/goal', {
             method: 'GET',
@@ -35,8 +40,13 @@ function Goals() {
     }, [])
     return (
         <>
-            {goal !== null ? <GoalCircle goal={goal} /> : (<GoalForm fetchAllGoal={fetchAllGoal} fetchGoal={fetchGoal} />)}
-            <button className="goals-button" onClick={() => setShowAllGoals(prev => !prev)}>{showAllGoals === true ? "Hide Community Goals" : "Show Community Goals"}</button>
+            <div className="back-arrow">
+                <i id="goBack" onClick={goBackHome} className="fa-solid fa-arrow-left"></i>
+            </div>
+            <div className="goal-content">
+                {goal !== null ? <GoalCircle goal={goal} /> : (<GoalForm fetchAllGoal={fetchAllGoal} fetchGoal={fetchGoal} />)}
+                <button className="goals-button" onClick={() => setShowAllGoals(prev => !prev)}>{showAllGoals === true ? "Hide Community Goals" : "Show Community Goals"}</button>
+            </div>
             {showAllGoals && (
                 <table id="goals">
                     <thead>

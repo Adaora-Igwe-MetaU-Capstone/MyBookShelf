@@ -8,8 +8,6 @@ import { useLocation } from "react-router-dom";
 function BookShelf() {
     const [bookshelves, setBookshelves] = useState([])
     const navigate = useNavigate()
-    const location = useLocation();
-    const state = location.state;
     async function fetchBookShelves() {
         try {
             const res = await fetch('http://localhost:3000/user-bookshelves', {

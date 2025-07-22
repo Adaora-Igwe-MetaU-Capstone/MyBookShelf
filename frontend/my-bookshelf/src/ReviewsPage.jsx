@@ -2,6 +2,8 @@ import { useState, useEffect } from "react"
 import { useUser } from "./contexts/UserContext"
 import { addToQueue } from "./utils/db"
 import { toast } from 'react-toastify';
+import StarRatingInput from "./StarRatingInput";
+import StarRatingDisplay from "./StarRatingDisplay";
 function ReviewsPage(props) {
     const [editMode, setEditMode] = useState(false)
     const [content, setContent] = useState()
@@ -59,11 +61,7 @@ function ReviewsPage(props) {
             if (googleId === props.bookData.googleId) {
                 setEditMode(false)
                 props.getReviews()
-                // setReview(review)
-                // setRating(rating)
-
             }
-
         }
         window.addEventListener('REVIEW_SAVED', handleSync)
         return () => { window.removeEventListener('REVIEW_SAVED', handleSync) }
@@ -78,7 +76,7 @@ function ReviewsPage(props) {
                     <div>
                         <strong>{review.user.username}</strong>
                         <p>{review.content}</p>
-                        <p>{review.rating}/5</p>
+                        <StarRatingDisplay rating={review.rating} />
                         {review.user.username === user.user.username && !editMode && (
                             <button onClick={handleEdit}>Edit</button>
                         )}
@@ -91,7 +89,7 @@ function ReviewsPage(props) {
                     <h3>Edit Your Review:</h3>
                     <textarea onChange={(e) => setContent(e.target.value)
                     } value={content} name="" id=""></textarea>
-                    <input value={Number(rating)} onChange={(e) => setRating(e.target.value)} type="number" max='5' min="1" />
+                    <StarRatingInput rating={rating} setRating={setRating} />
                     <button onClick={handleSave}>Save Changes</button>
                 </div>
             )}
