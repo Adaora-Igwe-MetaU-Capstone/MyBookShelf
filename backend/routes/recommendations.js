@@ -61,15 +61,19 @@ router.get('/recs', async (req, res) => {
             ? highlyRated.sort((a, b) => b.rating - a.rating).slice(0, 5) // limit to top 5 if needed
             : enrichedUserBooks;
         const userBookGoogleIds = enrichedUserBooks.map(b => b.googleId).filter(Boolean);
+        const userCategories = [
+            ...new Set(enrichedUserBooks.flatMap(b => b.categories.map(c => c.toLowerCase())))
+        ];
         const recBooks = await prisma.recBook.findMany({
             where: {
                 googleId: {
                     notIn: userBookGoogleIds
+                },
+                categories: {
+                    hasSome: userCategories
                 }
             }
         });
-        // console.log("Inferred rating for", book.title, "=>", inferredRating);
-        // console.log("Base books:", baseBooks.map(b => b.title));
 
         let recs = [];
         baseBooks.forEach(userBook => {
@@ -84,7 +88,6 @@ router.get('/recs', async (req, res) => {
                 deduped.set(book.googleId, { book, similarity });
             }
         });
-        // console.log(deduped)
         const top = Array.from(deduped.values())
             .sort((a, b) => b.similarity - a.similarity)
             .slice(0, 10)
