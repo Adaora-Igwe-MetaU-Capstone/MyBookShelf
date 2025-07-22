@@ -7,6 +7,7 @@ import { useUser } from "./contexts/UserContext"
 import { addToQueue } from "./utils/db"
 import { toast } from 'react-toastify';
 import './ReflectionPage.css'
+import { useNavigate } from "react-router-dom"
 function ReflectionPage(props) {
     const location = useLocation();
     const state = location.state || {};
@@ -18,6 +19,10 @@ function ReflectionPage(props) {
     const [rating, setRating] = useState(0)
     const user = useUser()
     const [existingReflection, setExistingReflection] = useState(false)
+    const navigate = useNavigate()
+    const goBackHome = () => {
+        navigate("/mybookshelf")
+    }
     const fetchReflection = async () => {
         const res = await fetch(`http://localhost:3000/reflection/${bookData.googleId}`, {
             method: 'GET',
@@ -100,6 +105,8 @@ function ReflectionPage(props) {
     return (
         <div className="wrapper">
             <div className="reflection-page">
+                <i id="goBack" onClick={goBackHome} className="fa-solid fa-arrow-left"></i>
+
                 <div className="reflection-header">
                     <img width="200px" height="300px" src={bookData.cover} alt="bookcover" />
                     <h3>{bookData.title} - {bookData.authors.join(", ")}</h3>
