@@ -13,10 +13,17 @@ export function cosineSimilarity(a, b) {
     if (magA == 0 || magB == 0) return 0;
     return dot / (magA * magB)
 }
-
+function jaccardSimilarity(setA, setB) {
+    const intersection = setA.filter(element => setB.includes(element)).length;
+    const union = new Set([...setA, ...setB]);
+    if (union.size === 0) return 0;
+    return intersection / union.size;
+}
 export function getAuthorSimilarity(bookA, bookB) {
     if (!bookA.authors || !bookB.authors) return 0;
-    return bookA.authors == bookB.authors ? 1 : 0;
+    const authorsA = Array.isArray(bookA.authors) ? bookA.authors : [bookA.authors];
+    const authorsB = Array.isArray(bookB.authors) ? bookB.authors : [bookB.authors];
+    return jaccardSimilarity(authorsA, authorsB);
 }
 
 export function normalizeRating(rating, min = 1, max = 5) {
