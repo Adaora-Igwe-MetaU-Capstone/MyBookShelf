@@ -9,6 +9,10 @@
     box-sizing: border-box;
 }
 
+.title-rating {
+    width: 500px;
+}
+
 .book-card {
     width: 100%;
     max-width: 700px;
@@ -21,6 +25,7 @@
     border-radius: 20px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    justify-content: space-around;
 }
 
 @media (max-width: 768px) {

@@ -60,7 +60,17 @@ router.get("/user-bookshelves", async (req, res) => {
     try {
         const bookshelves = await prisma.bookshelf.findMany({
             where: { userId },
-            include: { books: true }
+            include: {
+                books: {
+                    include: {
+                        reviews: {
+                            where: {
+                                userId: userId
+                            }
+                        }
+                    }
+                }
+            }
         })
         const groupedBooks = {}
         for (const shelf of bookshelves) {
