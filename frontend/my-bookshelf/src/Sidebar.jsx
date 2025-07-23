@@ -20,7 +20,6 @@ function Sidebar(props) {
         <>
             <div id="sidebar" className={`sidebar ${props.isSidebarOpen ? 'open' : ''}`}>
                 <i onClick={props.toggleSidebar} id="closeIcon" className="fa-solid fa-xmark"></i>
-                <img id="profile-avatar" src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${user?.user.username}`} alt="Profile avatar" />
                 <button onClick={viewBookshelf} className="view-bookshelf">View My BookShelf</button>
                 <button onClick={viewGoalPage}>View Goals</button>
                 <button className="logout-button" onClick={handleLogout}>Logout</button>

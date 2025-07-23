@@ -4,13 +4,19 @@
     flex-direction: row;
     margin-top: 20px;
     margin-bottom: 20px;
-    background-color: #9CAF88;
+    background-color: #e7ddc3;
     border-radius: 20px;
     padding-left: 20px;
     padding-top: 20px;
     padding-bottom: 20px;
     box-shadow: 0.3s ease;
     margin-right: 20px;
+}
+
+.book:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: 0.3s ease;
 }
 
 .book-cover {
@@ -23,8 +29,9 @@
 }
 
 .book-cover:hover {
-    transform: translateY(-30px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: 0.3s ease;
 }
 
 .details {
