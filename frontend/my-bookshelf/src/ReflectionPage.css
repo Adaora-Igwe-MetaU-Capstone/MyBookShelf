@@ -27,19 +27,36 @@
     align-items: flex-start;
     margin: 0;
     border: 0;
+    margin-top: 20px;
 
 }
 
 .reflection-header {
-    width: 500px;
+    width: 800px;
     border: 0;
     margin: 0;
     flex-shrink: 0;
 }
 
-.review-reflection {
+.review {
     margin: 0;
     padding: 0;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.reflection {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.reflection-btn {
+    margin-top: 30px;
 }
 
 .wrapper {

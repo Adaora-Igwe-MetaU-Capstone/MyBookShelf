@@ -74,8 +74,8 @@ function ReviewForm(props) {
                     <textarea
                         value={review}
                         onChange={(e) => setReview(e.target.value)}
-                        rows={4}
-                        cols={40}
+                        rows={2}
+                        cols={30}
                     ></textarea>
                     <br />
                     <label>Rating:</label>
