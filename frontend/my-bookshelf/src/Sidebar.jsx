@@ -20,8 +20,8 @@ function Sidebar(props) {
         <>
             <div id="sidebar" className={`sidebar ${props.isSidebarOpen ? 'open' : ''}`}>
                 <i onClick={props.toggleSidebar} id="closeIcon" className="fa-solid fa-xmark"></i>
-                <button onClick={viewBookshelf} className="view-bookshelf">View My BookShelf</button>
-                <button onClick={viewGoalPage}>View Goals</button>
+                <button onClick={viewBookshelf} className="view-bookshelf">My Books</button>
+                <button onClick={viewGoalPage}>Goals</button>
                 <button className="logout-button" onClick={handleLogout}>Logout</button>
             </div>
         </>

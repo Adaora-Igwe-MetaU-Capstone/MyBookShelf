@@ -29,11 +29,20 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  font-family: 'Lora', serif;
+  color: #2c2c2c;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Playfair Display', serif;
+  color: #2c2c2c;
 }
 
 button {
@@ -49,7 +58,9 @@ button {
 }
 
 button:hover {
-  border-color: #646cff;
+  background-color: #ede2d4;
+  color: #6b4c3b;
+  border-color: #6b4c3b;
 }
 
 button:focus,
