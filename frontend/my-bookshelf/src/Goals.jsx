@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
+import ProgressBar from 'react-bootstrap/ProgressBar';
 import GoalForm from "./GoalForm"
 import GoalCircle from "./GoalCircle"
+import CustomProgress from "./CustomProgress";
 import './Goals.css'
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate } from "react-router-dom"
 function Goals() {
@@ -28,6 +29,7 @@ function Goals() {
                 credentials: 'include'
             })
             const data = await res.json()
+            console.log(data)
             setAllGoals(data)
 
         } catch (err) {
@@ -48,24 +50,16 @@ function Goals() {
                 <button className="goals-button" onClick={() => setShowAllGoals(prev => !prev)}>{showAllGoals === true ? "Hide Community Goals" : "Show Community Goals"}</button>
             </div>
             {showAllGoals && (
-                <table id="goals">
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th>Goal</th>
-                        </tr>
-                    </thead>
-                    {allGoals.map(goal => (
-                        <thead>
-                            <tr>
-                                <th>@{goal.user.username}</th>
-                                <th>{goal.target}</th>
-                            </tr>
-
-                        </thead>
-                    ))}
-                </table>
+                allGoals.map(goal => (
+                    <section className="user-goal" key={goal.id}>
+                        <img id="avatar" src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${goal.user.username}`} alt="Profile avatar" />
+                        <p className="user-name"><strong>@{goal.user.username}</strong></p>
+                        <p>{goal.booksReadCount} of {goal.target} books read</p>
+                        <CustomProgress progress={goal.progress}></CustomProgress>
+                    </section>
+                ))
             )}
+
         </>
     )
 }
