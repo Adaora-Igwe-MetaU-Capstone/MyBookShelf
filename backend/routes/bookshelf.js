@@ -29,7 +29,9 @@ router.get("/bookshelf", async (req, res) => {
 router.post("/bookshelf/add", async (req, res) => {
 
     const userId = req.session.userId;
+
     const { bookshelfId, description, title, authors, cover, googleId, genres } = req.body;
+
     const bookshelf = await prisma.bookshelf.findFirst({
         where: { userId: userId, name: bookshelfId, }
     })
@@ -43,7 +45,10 @@ router.post("/bookshelf/add", async (req, res) => {
         update: {
             bookshelfId: bookshelf.id
         }, create: {
+
             title, authors, cover, description, googleId, genres: Array.isArray(genres) ? genres : [],
+
+
             bookshelf: {
                 connect: { id: bookshelf.id }
 

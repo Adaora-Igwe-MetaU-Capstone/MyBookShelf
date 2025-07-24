@@ -31,12 +31,29 @@ router.get('/recs', async (req, res) => {
         }
         const normalizedBooks = userBooks.map(book => {
             const userReview = book.reviews.find(r => r.userId === userId);
+            const shelf = userWithBooks.bookshelves.find(bs =>
+                bs.books.some(b => b.id === book.id)
+            );
+            const shelfName = shelf?.name?.toLowerCase() || '';
+            let inferredRating = userReview?.rating;
+            if (inferredRating == null) {
+                if (shelfName.includes('read')) {
+                    inferredRating = 3.5;
+                } else if (shelfName.includes('currently')) {
+                    inferredRating = 3.0;
+                } else if (shelfName.includes('want')) {
+                    inferredRating = 2.5;
+                } else {
+                    inferredRating = 2.0;
+                }
+            }
             return {
                 ...book,
                 categories: book.categories || book.genres || [],
-                rating: userReview?.rating || 0,
-            }
+                rating: inferredRating,
+            };
         });
+
         const categoryList = getCategories(normalizedBooks);
         const enrichedUserBooks = addVectorsToBooks(normalizedBooks, categoryList);
         const highlyRated = enrichedUserBooks.filter(b => (b.rating ?? 0) >= 3);
@@ -44,17 +61,24 @@ router.get('/recs', async (req, res) => {
             ? highlyRated.sort((a, b) => b.rating - a.rating).slice(0, 5) // limit to top 5 if needed
             : enrichedUserBooks;
         const userBookGoogleIds = enrichedUserBooks.map(b => b.googleId).filter(Boolean);
+        const userCategories = [
+            ...new Set(enrichedUserBooks.flatMap(b => b.categories.map(c => c.toLowerCase())))
+        ];
         const recBooks = await prisma.recBook.findMany({
             where: {
                 googleId: {
                     notIn: userBookGoogleIds
+                },
+                categories: {
+                    hasSome: userCategories
                 }
             }
         });
+
         let recs = [];
         baseBooks.forEach(userBook => {
             recBooks.forEach(otherBook => {
-                const similarity = getSimilarity(userBook, otherBook);
+                const similarity = getSimilarity(userBook, otherBook) * (userBook.rating / 5);
                 recs.push({ book: otherBook, similarity });
             });
         });
