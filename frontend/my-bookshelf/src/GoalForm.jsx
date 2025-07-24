@@ -29,7 +29,7 @@ function GoalForm(props) {
             props.fetchGoal()
             props.fetchAllGoal()
         } catch (error) {
-            console.error(error)
+            toast.error(error.message)
         }
     }
     useEffect(() => {

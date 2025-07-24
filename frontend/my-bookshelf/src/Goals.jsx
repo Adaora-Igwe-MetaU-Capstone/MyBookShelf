@@ -26,7 +26,7 @@ function Goals() {
             setAllGoals(data)
 
         } catch (err) {
-            console.error("Error fetching goals", err)
+            toast.error("Error fetching goals", err)
         }
     }
     useEffect(() => {
