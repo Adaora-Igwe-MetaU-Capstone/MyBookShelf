@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 const DB_NAME = "my-bookshelf";
 const STORE_NAME = 'homepageBooks';
 const QUEUE_STORE = 'offlineQueue'
-const REVIEW_STORE = 'reviewsByBooks'
 export const initDB = async () => {
     return openDB(DB_NAME, 1, {
         upgrade(db) {
@@ -13,9 +12,6 @@ export const initDB = async () => {
             if (!db.objectStoreNames.contains(QUEUE_STORE)) {
                 db.createObjectStore(QUEUE_STORE, { autoIncrement: true })
             }
-            // if (!db.objectStoreNames.contains(REVIEW_STORE)) {
-            //     db.createObjectStore(REVIEW_STORE)
-            // }
         }
     })
 
