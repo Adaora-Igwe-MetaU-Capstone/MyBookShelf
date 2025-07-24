@@ -34,20 +34,16 @@ function App() {
     const handleOnline = () => {
 
       syncQueue()
-      console.log("Back Online!")
     }
     window.addEventListener("online", handleOnline)
     if (navigator.onLine) {
-      // toast.info("You are online!")
       syncQueue()
 
     }
     return () => {
       window.removeEventListener("online", handleOnline)
     }
-
   }
-
     , [])
   if (!navigator.onLine) {
     toast.info('You are currently offline');
@@ -67,8 +63,6 @@ function App() {
       window.removeEventListener('online', handleOnline);
     };
   }, []);
-
-
   return (
     <>
       <BrowserRouter>
@@ -80,7 +74,6 @@ function App() {
           <Route path="/mybookshelf" element={<ProtectedBookshelf currUser={currUser} />}></Route>
           <Route path="/goal" element={<Goals />} />
           <Route path="/books/:googleId/reflection" element={<ReflectionPage />} />
-
         </Routes>
       </BrowserRouter>
       <ToastContainer

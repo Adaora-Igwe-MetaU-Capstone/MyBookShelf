@@ -13,7 +13,6 @@ router.get('/reviews', async (req, res) => {
                 user: true
             }
         })
-        console.log(reviews)
         res.json(reviews)
     } catch (err) {
         res.status(500).json({ error: err })
@@ -23,7 +22,7 @@ router.get('/reviews', async (req, res) => {
 //add reviews
 router.post('/review', async (req, res) => {
     const userId = req.session.userId;
-    const { googleId, content, title, author, cover, description, rating } = req.body;
+    const { googleId, content, title, authors, cover, description, rating } = req.body;
     if (!userId) {
         return res.status(401).json({ error: "Not logged in." });
     }
@@ -42,7 +41,7 @@ router.post('/review', async (req, res) => {
                 data: {
                     googleId,
                     title,
-                    author,
+                    authors,
                     cover,
                     description,
                     bookshelf: {
@@ -59,7 +58,6 @@ router.post('/review', async (req, res) => {
                 rating: Number(rating)
             }
         })
-        console.log(review)
         res.json(review)
     } catch (err) {
         res.status(500).json({ error: err })

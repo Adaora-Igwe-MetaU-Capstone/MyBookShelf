@@ -1,0 +1,49 @@
+.buy-links {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.buy-links a {
+    text-decoration: none;
+    color: white;
+    background-color: #758467;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.buy-links a:hover {
+    background-color: #CBD5C0;
+    color: #fff;
+}
+
+.reflection-page {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0;
+    border: 0;
+
+}
+
+.reflection-header {
+    width: 500px;
+    border: 0;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.review-reflection {
+    margin: 0;
+    padding: 0;
+}
+
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}

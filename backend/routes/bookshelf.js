@@ -27,10 +27,8 @@ router.get("/bookshelf", async (req, res) => {
 
 //ADD TO BOOKSHELF
 router.post("/bookshelf/add", async (req, res) => {
-
     const userId = req.session.userId;
-    const { bookshelfId, description, title, author, cover, googleId } = req.body;
-    console.log(req.body)
+    const { bookshelfId, description, title, authors, cover, googleId, genres } = req.body;
     const bookshelf = await prisma.bookshelf.findFirst({
         where: { userId: userId, name: bookshelfId, }
     })
@@ -38,23 +36,23 @@ router.post("/bookshelf/add", async (req, res) => {
     if (!bookshelf) {
         return res.status(403).json({ error: "Unauthorized Access" })
     }
-
     const newBook = await prisma.book.upsert({
-        where: { googleId },
+        where: { googleId: String(googleId) },
         update: {
             bookshelfId: bookshelf.id
         }, create: {
-            title, author, cover, description, googleId, bookshelfId: bookshelf.id
+            title, authors, cover, description, googleId: String(googleId), genres: Array.isArray(genres) ? genres : [],
+            bookshelf: {
+                connect: { id: bookshelf.id }
 
+            }
         }
-
     })
     res.status(201).json(newBook);
 })
 
 // GET BOOKS IN BOOKSHELF
 router.get("/user-bookshelves", async (req, res) => {
-
     const userId = req.session.userId;
     if (!userId) {
         return res.status(401).json({ error: "Not Logged In" })
@@ -62,14 +60,23 @@ router.get("/user-bookshelves", async (req, res) => {
     try {
         const bookshelves = await prisma.bookshelf.findMany({
             where: { userId },
-            include: { books: true }
+            include: {
+                books: {
+                    include: {
+                        reviews: {
+                            where: {
+                                userId: userId
+                            }
+                        }
+                    }
+                }
+            }
         })
         const groupedBooks = {}
         for (const shelf of bookshelves) {
             groupedBooks[shelf.name] = shelf.books
         }
         res.json(groupedBooks)
-
     } catch (err) {
         console.error(err)
         res.status(500).json({ error: "Error fetching bookshelves" })

@@ -6,15 +6,14 @@ const { connect } = require("./auth");
 const prisma = new PrismaClient();
 
 router.post('/reflection', async (req, res) => {
-
     const userId = req.session.userId;
-    const { googleId, content, title, author, cover, description } = req.body;
+    const { googleId, content, title, authors, cover, description } = req.body;
     if (!userId) {
         return res.status(401).json({ error: "Not logged in." });
     }
     try {
         let book = await prisma.book.findUnique({
-            where: { googleId }
+            where: { googleId: String(googleId) }
         })
         const shelf = await prisma.bookshelf.findFirst({
             where: {
@@ -22,13 +21,12 @@ router.post('/reflection', async (req, res) => {
                 name: "Read"
             }
         })
-        console.log("shelf", shelf)
         if (!book) {
             book = await prisma.book.create({
                 data: {
-                    googleId,
+                    googleId: String(googleId),
                     title,
-                    author,
+                    authors,
                     cover,
                     description,
                     bookshelf: {
@@ -37,12 +35,11 @@ router.post('/reflection', async (req, res) => {
                 }
             })
         }
-
         const reflection = await prisma.reflection.upsert({
             where: {
                 userId_googleId: {
                     userId: userId,
-                    googleId: googleId,
+                    googleId: String(googleId)
                 },
             },
             update: {
@@ -50,23 +47,19 @@ router.post('/reflection', async (req, res) => {
             },
             create: {
                 userId: userId,
-                googleId: googleId,
+                googleId: String(googleId),
                 content: content,
             },
         });
-        console.log(reflection)
         res.json(reflection);
     } catch (err) {
-
         console.error(err);
         res.status(500).json({ error: "Something went wrong." });
     }
 });
-
 router.get('/reflection/:googleId', async (req, res) => {
     const userId = req.session.userId;
     const googleId = req.params.googleId
-    console.log(userId, googleId)
     if (!userId) {
         return res.status(401).json({ error: "Not logged in." });
     }
