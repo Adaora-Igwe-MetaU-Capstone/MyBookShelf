@@ -37,7 +37,7 @@ model Goal {
 
 model Book {
 title String
-  author String?
+  authors String[]
   cover String?
   description String?
   genres String[]
@@ -82,4 +82,17 @@ model Review{
   content String
   rating Int
   @@unique([userId, googleId])
+}
+
+model RecBook {
+  id Int @id @default(autoincrement())
+  googleId     String   @unique
+  title          String
+  description    String?
+  authors        String[]
+  categories     String[]
+  averageRating  Float?
+  maturityRating String?
+  pageCount      Int?
+  categoryVector Json?
 }

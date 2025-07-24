@@ -14,7 +14,11 @@ router.get('/recs', async (req, res) => {
             where: { id: userId },
             include: {
                 bookshelves: {
-                    include: { books: true }
+                    include: {
+                        books: {
+                            include: { reviews: true }
+                        }
+                    }
                 }
             }
         });
@@ -22,25 +26,59 @@ router.get('/recs', async (req, res) => {
             return res.status(200).json([]);
         }
         const userBooks = userWithBooks.bookshelves.flatMap(bs => bs.books);
-
         if (userBooks.length === 0) {
             return res.status(200).json([]);
         }
-        const categoryList = getCategories(userBooks);
-        const enrichedUserBooks = addVectorsToBooks(userBooks, categoryList);
+        const normalizedBooks = userBooks.map(book => {
+            const userReview = book.reviews.find(r => r.userId === userId);
+            const shelf = userWithBooks.bookshelves.find(bs =>
+                bs.books.some(b => b.id === book.id)
+            );
+            const shelfName = shelf?.name?.toLowerCase() || '';
+            let inferredRating = userReview?.rating;
+            if (inferredRating == null) {
+                if (shelfName.includes('read')) {
+                    inferredRating = 3.5;
+                } else if (shelfName.includes('currently')) {
+                    inferredRating = 3.0;
+                } else if (shelfName.includes('want')) {
+                    inferredRating = 2.5;
+                } else {
+                    inferredRating = 2.0;
+                }
+            }
+            return {
+                ...book,
+                categories: book.categories || book.genres || [],
+                rating: inferredRating,
+            };
+        });
+
+        const categoryList = getCategories(normalizedBooks);
+        const enrichedUserBooks = addVectorsToBooks(normalizedBooks, categoryList);
+        const highlyRated = enrichedUserBooks.filter(b => (b.rating ?? 0) >= 3);
+        const baseBooks = highlyRated.length > 0
+            ? highlyRated.sort((a, b) => b.rating - a.rating).slice(0, 5) // limit to top 5 if needed
+            : enrichedUserBooks;
         const userBookGoogleIds = enrichedUserBooks.map(b => b.googleId).filter(Boolean);
-        const otherBooksRaw = await prisma.book.findMany({
+        const userCategories = [
+            ...new Set(enrichedUserBooks.flatMap(b => b.categories.map(c => c.toLowerCase())))
+        ];
+        const recBooks = await prisma.recBook.findMany({
             where: {
                 googleId: {
                     notIn: userBookGoogleIds
+                },
+                categories: {
+                    hasSome: userCategories
                 }
             }
         });
-        const enrichedOtherBooks = addVectorsToBooks(otherBooksRaw, categoryList);
+
         let recs = [];
-        enrichedUserBooks.forEach(userBook => {
-            enrichedOtherBooks.forEach(otherBook => {
-                const similarity = getSimilarity(userBook, otherBook);
+        baseBooks.forEach(userBook => {
+            recBooks.forEach(otherBook => {
+                const similarity = getSimilarity(userBook, otherBook) * (userBook.rating / 5);
                 recs.push({ book: otherBook, similarity });
             });
         });
@@ -54,10 +92,10 @@ router.get('/recs', async (req, res) => {
             .sort((a, b) => b.similarity - a.similarity)
             .slice(0, 10)
             .map(entry => entry.book);
+
         res.status(200).json(top);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Something went wrong" });
+        res.status(500).json({ error: "Something went wrong" }, err);
     }
 });
 module.exports = router;

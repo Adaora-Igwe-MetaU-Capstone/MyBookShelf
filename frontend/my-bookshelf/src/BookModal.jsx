@@ -83,6 +83,7 @@ function BookModal(props) {
     }, [])
     useEffect(() => {
         fetchBooksInShelves()
+        console.log(props.modalBook)
     }, [props.modalBook.googleId])
     const addToBookshelf = async (e) => {
         const selected = e.target.value
@@ -92,7 +93,7 @@ function BookModal(props) {
         setSelectedBookshelf(selected)
         const bookData = {
             title: props.modalBook.title,
-            author: props.modalBook.author,
+            authors: props.modalBook.author,
             cover: props.modalBook.cover,
             description: props.modalBook.description,
             googleId: props.modalBook.googleId,

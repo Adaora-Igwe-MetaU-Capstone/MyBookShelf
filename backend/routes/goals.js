@@ -33,7 +33,6 @@ router.post('/goal', async (req, res) => {
 //get goals for a user
 router.get('/goal', async (req, res) => {
     const userId = req.session.userId;
-    console.log(userId)
     const currentYear = new Date().getFullYear();
     if (!userId) {
         return res.status(401).json({ error: "Not logged in." })
@@ -81,7 +80,6 @@ router.get('/progress', async (req, res) => {
             userId: userId
         }
     })
-    console.log(read)
     const booksRead = await prisma.book.findMany({
         where: {
             userId,
@@ -92,7 +90,6 @@ router.get('/progress', async (req, res) => {
 
         },
     })
-    console.log(booksRead)
     res.json(booksRead.length)
 })
 module.exports = router
