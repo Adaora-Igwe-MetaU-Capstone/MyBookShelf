@@ -74,15 +74,6 @@ const deduplicate = (queue) => {
     for (let action of queue) {
         const key = `${action.type}-${action?.data?.googleId || ''}`
         seen.set(key, action)
-        // if (seen.has(key)) {
-        //     const existingIndex = result.findIndex((a) => `${a.type}-${a?.data?.googleId || ''}` === key)
-        //     if (existingIndex !== 1) {
-        //         result[existingIndex] = action
-        //     }
-        // } else {
-        //     seen.set(key, true)
-        //     result.push(action)
-        // }
     }
     return Array.from(seen.values())
 }

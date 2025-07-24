@@ -5,7 +5,7 @@
     z-index: 2;
     top: 0;
     left: 0;
-    background-color: rgb(233, 233, 233);
+    background-color: #ede2d4;
     overflow-x: hidden;
     transition: 0.3s ease;
     padding-top: 60px;
@@ -18,14 +18,14 @@
     width: 250px;
 }
 
+.logout-button {
+    margin-top: 10px;
+}
+
 #closeIcon {
     font-size: 30px;
     cursor: pointer;
     margin-left: 40px;
-}
-
-#profile-avatar {
-    width: 80px;
 }
 
 .view-bookshelf {

@@ -1,6 +1,5 @@
 #root {
   margin: 0 auto;
-  /* padding: 2rem; */
   text-align: center;
 }
 
@@ -9,7 +8,9 @@
   padding: 20px;
   margin-left: 0;
   margin-right: 0;
-  background-color: #E0BFA2;
+  background-color: #fdfaf6;
+  color: #2c2c2c;
+  font-family: 'Lora', serif;
 }
 
 .main-sidebar-open {
@@ -35,21 +36,14 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: flex-start;
+  padding-left: 50px;
 }
 
-.book {
-  width: 300px;
-  cursor: pointer;
-}
 
 body {
-  background-color: #E0BFA2;
-
+  background-color: #fdfaf6
 }
-
-
-
 
 
 
@@ -77,11 +71,3 @@ body {
 .read-the-docs {
   color: #888;
 }
-
-/*
-@media (max-width: 309px) {
-  body {
-    max-width: 40%;
-
-  }
-} */

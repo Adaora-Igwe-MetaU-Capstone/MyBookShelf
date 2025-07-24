@@ -14,7 +14,7 @@ function GoalCircle(props) {
             const data = await res.json()
             setProgress(data.Read.length)
         } catch (err) {
-            console.error("Error fetching bookshelves", err)
+            toast.error("Error fetching progress")
         }
     }
 

@@ -28,7 +28,6 @@ function BookModal(props) {
             const data = await res.json();
             setShelfOptions(data)
         } catch (err) {
-            console.error("Error fetching bookshelves", err)
         }
     }
     const fetchBookshelves = async () => {
@@ -45,7 +44,7 @@ function BookModal(props) {
             const data = await res.json();
             setBookshelves(data);
         } catch (err) {
-            console.error("Error fetching bookshelves", err)
+            toast.error("Error fetching bookshelves", err)
         }
     }
     async function fetchBooksInShelves() {
@@ -70,7 +69,7 @@ function BookModal(props) {
             }
 
         } catch (err) {
-            console.error("Error fetching bookshelves", err)
+            toast.error("Error fetching bookshelves", err)
         }
         if (props.modalBook.googleId) {
             fetchBooksInShelves()
@@ -79,7 +78,6 @@ function BookModal(props) {
     useEffect(() => {
         fetchBookshelves()
         fetchShelfOption()
-
     }, [])
     useEffect(() => {
         fetchBooksInShelves()
@@ -92,14 +90,16 @@ function BookModal(props) {
         setSelectedBookshelf(selected)
         const bookData = {
             title: props.modalBook.title,
-            author: props.modalBook.author,
+            authors: props.modalBook.authors,
             cover: props.modalBook.cover,
             description: props.modalBook.description,
             googleId: props.modalBook.googleId,
             bookshelfId: selected,
-            userId: user.user.id
+            userId: user.user.id,
+            genres: props.modalBook.genres
 
         }
+
         if (!navigator.onLine) {
             toast.info("You are offline, We'll sync this when you come online")
             await addToQueue({ type: "ADD_TO_SHELF", data: bookData })
@@ -119,7 +119,6 @@ function BookModal(props) {
             fetchBookshelves()
             toast.success(`Book added to ${selected}`)
         } catch (err) {
-            console.error("Error adding book to bookshelf", err)
             toast.error("Error adding book to bookshelf")
         }
     }
@@ -133,7 +132,7 @@ function BookModal(props) {
                     <div className="book-details">
                         <h3>{props.modalBook.title}</h3>
                         <h4>{props.modalBook.author}</h4>
-                        <button className="see-more" onClick={() => navigate(`/books/${props.modalBook.googleId}/reflection`, { state: props.modalBook })}>See Reviews</button></div>
+                        <button className="see-more" onClick={() => navigate(`/books/${props.modalBook.googleId}/reflection`, { state: props.modalBook })}>See More</button></div>
 
 
 
@@ -144,7 +143,7 @@ function BookModal(props) {
                     setSelectedBookshelf(e.target.value);
                     addToBookshelf(e)
                 }} defaultValue="">
-                    <option value="">Select a  shelf</option>
+                    <option value="">Select a shelf</option>
                     {shelfOptions.map((shelf) => (
                         <option key={shelf} value={shelf}>{shelf.replace(/([A-Z])/g, "$1").trim()}</option>
                     ))}

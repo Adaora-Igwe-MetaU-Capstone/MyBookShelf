@@ -34,7 +34,6 @@ function App() {
     const handleOnline = () => {
 
       syncQueue()
-      console.log("Back Online!")
     }
     window.addEventListener("online", handleOnline)
     if (navigator.onLine) {

@@ -10,6 +10,9 @@ import { useUser } from './contexts/UserContext';
 import { saveBookstoDB, getBooksFromDB } from "./utils/db";
 import { toast } from 'react-toastify';
 import BookFlippingLoader from "./BookFlippingLoader";
+import BookRecs from "./BookRecs";
+import GenreBookList from "./GenreBookList";
+import SearchResults from "./SearchResults";
 function Home(props) {
     const [searchInput, setSearchInput] = useState("")
     const [searchResults, setSearchResults] = useState([])
@@ -18,6 +21,8 @@ function Home(props) {
     const [modalBook, setModalBook] = useState({})
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    const [bookRecs, setBookRecs] = useState([])
+    const [genreBooks, setGenreBooks] = useState({})
     const ApiKey = import.meta.env.VITE_API_KEY;
     const { user, setUser } = useUser()
     const toggleSidebar = () => {
@@ -25,6 +30,30 @@ function Home(props) {
     }
     function handleFormChange(e) {
         setSearchInput(() => e.target.value)
+    }
+    async function fetchRecs() {
+        try {
+            const url = `http://localhost:3000/recs`;
+            const response = await fetch(url, {
+                method: 'GET',
+                credentials: 'include'
+            });
+            const data = await response.json();
+            setBookRecs(data);
+        } catch (err) {
+            alert('Error fetching recommendations');
+        }
+    }
+    async function fetchGenreBooks() {
+        try {
+            const url = `http://localhost:3000/home-sections`
+            const response = await fetch(url)
+            const data = await response.json()
+            setGenreBooks(data)
+        } catch {
+            return false
+        }
+
     }
     async function fetchPopularBooks() {
         if (navigator.onLine) {
@@ -50,7 +79,9 @@ function Home(props) {
         }
     }
     useEffect(() => {
+        fetchGenreBooks()
         fetchPopularBooks()
+        fetchRecs()
     }, [])
     async function fetchBookSearch() {
         const url = `http://localhost:3000/search?q=${searchInput}`
@@ -67,31 +98,65 @@ function Home(props) {
         setSearchResults([])
         setSearchInput("")
         fetchPopularBooks()
-    }
-    return (
+    } return (
         <div>
-
-
-            <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}></Sidebar>
-            <div id="main" className={isSidebarOpen === true ? "main-sidebar-open" : "main"}><Header toggleSidebar={toggleSidebar} ></Header>
-                <QuoteBanner></QuoteBanner>
+            <Sidebar
+                toggleSidebar={toggleSidebar}
+                isSidebarOpen={isSidebarOpen}
+                setIsSidebarOpen={setIsSidebarOpen}
+                modalBook={modalBook}
+                setModalBook={setModalBook}
+            />
+            <div id="main" className={isSidebarOpen ? "main-sidebar-open" : "main"}>
+                <Header toggleSidebar={toggleSidebar} />
+                <QuoteBanner />
                 <Search
                     handleFormChange={handleFormChange}
                     handleSearch={handleSearch}
                     fetchBookSearch={fetchBookSearch}
                     clearSearch={clearSearch}
-                    searchInput={searchInput}></Search>
-                <div>{isLoading && (
-                    <BookFlippingLoader />
-                )}</div>
-                <BookList isClicked={isClicked}
-                    setIsClicked={setIsClicked} popularBooks={popularBooks}
-                    searchResults={searchResults}
-                    modalBook={modalBook}
-                    setModalBook={setModalBook}></BookList>
+                    searchInput={searchInput}
+                />
+                {searchResults.length > 0 ? (
+                    <SearchResults
+                        isClicked={isClicked}
+                        setIsClicked={setIsClicked}
+                        popularBooks={popularBooks}
+                        modalBook={modalBook}
+                        setModalBook={setModalBook}
+                        searchResults={searchResults} />
+                ) : (
+                    <>
+                        {isLoading && <BookFlippingLoader />}
+                        {bookRecs && (
+                            <BookRecs
+                                isClicked={isClicked}
+                                setIsClicked={setIsClicked}
+                                setModalBook={setModalBook}
+                                modalBook={modalBook}
+                                bookRecs={bookRecs}
+                            />
+                        )}
+                        <GenreBookList
+                            isClicked={isClicked}
+                            setIsClicked={setIsClicked}
+                            modalBook={modalBook}
+                            setModalBook={setModalBook}
+                            genreBooks={genreBooks}
+                        />
+                        <BookList
+                            isClicked={isClicked}
+                            setIsClicked={setIsClicked}
+                            popularBooks={popularBooks}
+                            modalBook={modalBook}
+                            setModalBook={setModalBook}
+                        />
+                    </>
+                )}
             </div>
-            {isClicked === true && <BookModal setIsClicked={setIsClicked} modalBook={modalBook} />}
+
+            {isClicked && <BookModal setIsClicked={setIsClicked} modalBook={modalBook} />}
         </div>
-    )
+    );
 }
 export default Home;
