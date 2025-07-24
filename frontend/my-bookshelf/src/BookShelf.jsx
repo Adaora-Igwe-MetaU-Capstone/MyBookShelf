@@ -120,6 +120,7 @@ function BookShelf() {
                                             <>
                                                 {book.reviews && book.reviews.length > 0 ? (
                                                     <>
+                                                        <p>Your Rating:</p>
                                                         <StarRatingDisplay rating={book.reviews[0].rating} />
                                                     </>
                                                 ) : (
