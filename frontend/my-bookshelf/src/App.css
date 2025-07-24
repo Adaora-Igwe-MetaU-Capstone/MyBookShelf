@@ -71,3 +71,11 @@ body {
 .read-the-docs {
   color: #888;
 }
+
+/*
+@media (max-width: 309px) {
+  body {
+    max-width: 40%;
+
+  }
+} */
