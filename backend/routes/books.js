@@ -85,4 +85,28 @@ router.get("/search", async (req, res) => {
         res.status(500).json({ error: "Error fetching books" })
     }
 })
+
+router.get("/book-ratings/:googleId", async (req, res) => {
+    const { googleId } = req.params;
+    const cacheKey = `bookRatings:${googleId}`;
+    const ApiKey = process.env.VITE_API_KEY;
+    try {
+        const cached = await redisClient.get(cacheKey);
+        if (cached) {
+            return res.json(JSON.parse(cached));
+        }
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${googleId}?key=${ApiKey}`);
+        const data = await response.json();
+        const ratingsData = {
+            averageRating: data.volumeInfo?.averageRating || null,
+            ratingsCount: data.volumeInfo?.ratingsCount || null,
+        };
+        await redisClient.setEx(cacheKey, 86400, JSON.stringify(ratingsData));
+        res.json(ratingsData);
+    } catch (err) {
+        console.error("Error fetching book ratings:", err);
+        res.status(500).json({ error: "Failed to fetch book ratings" });
+    }
+});
+
 module.exports = router
