@@ -6,9 +6,12 @@ import ReviewsPage from "./ReviewsPage"
 import { useUser } from "./contexts/UserContext"
 import { addToQueue } from "./utils/db"
 import { toast } from 'react-toastify';
+import './ReflectionPage.css'
+import { useNavigate } from "react-router-dom"
 function ReflectionPage(props) {
-    const location = useLocation()
-    const bookData = location.state
+    const location = useLocation();
+    const state = location.state || {};
+    const bookData = state.book || state
     const [reflection, setReflection] = useState(" ")
     const [reviews, setReviews] = useState([])
     const [editMode, setEditMode] = useState(false)
@@ -16,6 +19,10 @@ function ReflectionPage(props) {
     const [rating, setRating] = useState(0)
     const user = useUser()
     const [existingReflection, setExistingReflection] = useState(false)
+    const navigate = useNavigate()
+    const goBackHome = () => {
+        navigate("/mybookshelf")
+    }
     const fetchReflection = async () => {
         const res = await fetch(`http://localhost:3000/reflection/${bookData.googleId}`, {
             method: 'GET',
@@ -46,7 +53,7 @@ function ReflectionPage(props) {
             googleId: bookData.googleId,
             content: reflection,
             title: bookData.title,
-            author: bookData.author,
+            authors: bookData.authors,
             cover: bookData.cover,
             description: bookData.description,
         }
@@ -73,7 +80,6 @@ function ReflectionPage(props) {
             }
         } catch (err) {
             toast.error(err.message)
-
         }
     }
     useEffect(() => {
@@ -97,30 +103,36 @@ function ReflectionPage(props) {
         return () => { window.removeEventListener('REFLECTION_SAVED', handleSync) }
     }, [bookData.googleId])
     return (
-        <>
-            <div>
-                <img src={bookData.cover} alt="bookcover" />
-                <h3>{bookData.title} - {bookData.author}</h3>
-                <p>{bookData.description}</p>
-                <a href={bookData.barnesandNobleLink}>Buy on Barnes & Noble</a>
-                <a href={bookData.amazonLink}>Buy on Amazon</a>
-            </div>
-            <ReviewForm setContent={setContent} setRating={setRating} content={content} rating={rating} reviews={reviews} getReviews={getReviews} bookData={bookData} />
-            <ReviewsPage etContent={setContent} setRating={setRating} content={content} rating={rating} reviews={reviews} getReviews={getReviews} bookData={bookData} />
-            {existingReflection && !editMode ? (
-                <>
-                    <p><strong>Your Reflection:</strong></p>
-                    <p>{reflection}</p>
-                    <button onClick={() => setEditMode(true)}><i class="fa-solid fa-pen"></i></button></>
+        <div className="wrapper">
+            <div className="reflection-page">
+                <i id="goBack" onClick={goBackHome} className="fa-solid fa-arrow-left"></i>
 
-            ) : (<div>
+                <div className="reflection-header">
+                    <img width="200px" height="300px" src={bookData.cover} alt="bookcover" />
+                    <h3>{bookData.title} - {bookData.authors.join(", ")}</h3>
+                    <p>{bookData.description}</p>
+                    <div className="buy-links">
+                        <a href={`https://www.barnesandnoble.com/s/${encodeURIComponent(bookData.title + ' ' + bookData.authors.join(", "))}`}>Buy on Barnes & Noble</a>
+                        <a href={` https://www.amazon.com/s?k=${encodeURIComponent(bookData.title + ' ' + bookData.authors.join(", "))}`}>Buy on Amazon</a>
+                    </div>
+                </div>
+                <div className="review-reflection">
+                    <ReviewForm setContent={setContent} setRating={setRating} content={content} rating={rating} reviews={reviews} getReviews={getReviews} bookData={bookData} />
+                    <ReviewsPage etContent={setContent} setRating={setRating} content={content} rating={rating} reviews={reviews} getReviews={getReviews} bookData={bookData} />
+                    {existingReflection && !editMode ? (
+                        <>
+                            <p><strong>Your Reflection:</strong></p>
+                            <p>{reflection}</p>
+                            <button onClick={() => setEditMode(true)}><i className="fa-solid fa-pen"></i></button></>
 
-                <form action="">
-                    <textarea value={reflection} onChange={(e) => setReflection(e.target.value)} rows="40" cols="40" name="" id=""></textarea>
-                </form>
-                <button onClick={handleSave}>{existingReflection ? "Save Changes" : "Save Reflection"}</button>
-            </div>)
-            }</>
+                    ) : (<div>
+
+                        <form action="">
+                            <textarea value={reflection} onChange={(e) => setReflection(e.target.value)} rows="40" cols="40" name="" id=""></textarea>
+                        </form>
+                        <button onClick={handleSave}>{existingReflection ? "Save Changes" : "Save Reflection"}</button>
+                    </div>)
+                    }</div></div></div>
 
     )
 }

@@ -2,7 +2,7 @@ import './Book.css'
 function Book(props) {
     const modalBookObject = {
         title: props.bookTitle,
-        author: props.bookAuthor,
+        authors: props.bookAuthor,
         cover: props.bookCover,
         description: props.bookDescription,
         amazonLink: `https://www.amazon.com/s?k=${encodeURIComponent(props.bookTitle + ' ' + props.bookAuthor)}`,
@@ -16,10 +16,20 @@ function Book(props) {
     }
     return (
         <div className="book" onClick={modalDisplay}>
-            <img src={props.bookCover} alt="bookcover" className='book-cover' />
+            <img
+                src={props.bookCover || "/default-cover.jpeg"}
+                alt="bookcover"
+                className="book-cover"
+                onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/default-cover.jpeg";
+                }}
+            />
             <div className='details'>
                 <h2 className='book-title'>{props.bookTitle}</h2>
-                <p className='author'>{props.bookAuthor}</p>
+                <p className='author'> {Array.isArray(props.bookAuthor)
+                    ? props.bookAuthor.join(", ")
+                    : props.bookAuthor}</p>
             </div>
         </div>
     )

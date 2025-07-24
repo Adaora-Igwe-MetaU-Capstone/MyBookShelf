@@ -21,10 +21,10 @@ function BookRecs(props) {
                                 setModalBook={props.setModalBook}
                                 isClicked={props.isClicked}
                                 setIsClicked={props.setIsClicked}
-                                googleId={book.id}
+                                googleId={book.googleId}
                                 bookCover={`https://books.google.com/books/content?id=${book.googleId}&printsec=frontcover&img=1&zoom=1&source=gbs_api`}
                                 bookTitle={book.title}
-                                bookAuthor={(book.authors.map(author => capitalizeName(author))).join(', ')}
+                                bookAuthor={book.authors.map(author => capitalizeName(author))}
                                 bookDescription={book.description}
                                 genres={book.categories} />
                         </div>
