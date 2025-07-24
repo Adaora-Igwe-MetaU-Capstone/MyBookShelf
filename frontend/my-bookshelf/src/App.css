@@ -1,6 +1,5 @@
 #root {
   margin: 0 auto;
-  /* padding: 2rem; */
   text-align: center;
 }
 
@@ -9,7 +8,9 @@
   padding: 20px;
   margin-left: 0;
   margin-right: 0;
-  background-color: #aab79d;
+  background-color: #fdfaf6;
+  color: #2c2c2c;
+  font-family: 'Lora', serif;
 }
 
 .main-sidebar-open {
@@ -41,11 +42,8 @@
 
 
 body {
-  background-color: #aab79d
+  background-color: #fdfaf6
 }
-
-
-
 
 
 
