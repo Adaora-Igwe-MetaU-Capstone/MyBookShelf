@@ -11,7 +11,7 @@ function BookRecs(props) {
     }
     return (
         <>
-            <h3>Some books we think you'll like</h3>
+            <h1 className="book-category">Some books we think you'll like</h1>
             <div className="book-list">
                 {(props.bookRecs).map((book) => {
                     return (

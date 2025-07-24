@@ -35,13 +35,10 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: flex-start;
+  padding-left: 50px;
 }
 
-.book {
-  width: 300px;
-  cursor: pointer;
-}
 
 body {
   background-color: #E0BFA2;
