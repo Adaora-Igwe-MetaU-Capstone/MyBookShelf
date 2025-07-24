@@ -21,6 +21,35 @@ function ReflectionPage(props) {
     const user = useUser();
     const [existingReflection, setExistingReflection] = useState(false);
     const navigate = useNavigate();
+    const [aiPrompt, setAiPrompt] = useState("");
+    const [loadingPrompt, setLoadingPrompt] = useState(false);
+
+    const generatePrompt = async () => {
+        setLoadingPrompt(true);
+        try {
+            const res = await fetch("http://localhost:3000/generate-prompt", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title: bookData.title,
+                    authors: bookData.authors,
+                    description: bookData.description
+                }),
+            });
+
+            const data = await res.json();
+            console.log(data);
+            if (data.prompt) {
+                setAiPrompt(data.prompt);
+            }
+        } catch (error) {
+            console.error("Failed to generate prompt:", error);
+        } finally {
+            setLoadingPrompt(false);
+        }
+    };
 
     const goBackHome = () => {
         navigate("/mybookshelf");
@@ -87,6 +116,7 @@ function ReflectionPage(props) {
     useEffect(() => {
         fetchReflection();
         getReviews();
+        generatePrompt();
     }, [bookData.googleId]);
 
     useEffect(() => {
@@ -120,19 +150,46 @@ function ReflectionPage(props) {
 
 
             </div>
-            <div className="reflection">
-                <form onSubmit={handleSave}>
-                    <ReflectionCard
-                        reflection={reflection}
-                        setReflection={setReflection}
-                        editMode={editMode}
-                        setEditMode={setEditMode}
-                        handleSave={handleSave}
-                    />
-                    {editMode && (
-                        <button className="reflection-btn" type="submit">{existingReflection ? "Save Changes" : "Save Reflection"}</button>
-                    )}
-                </form></div>
+            <div className="ai-prompt-section" style={{
+                border: "1px solid #ccc",
+                padding: "1rem",
+                marginBottom: "1rem",
+                borderRadius: "10px",
+                backgroundColor: "#f9f9f9"
+            }}>
+                <h3>AI Reflection Prompt</h3>
+
+                {loadingPrompt ? (
+                    <p>Loading prompt...</p>
+                ) : (
+                    <p style={{ fontStyle: "italic", minHeight: "50px" }}>
+                        {aiPrompt || "No prompt generated yet."}
+                    </p>
+                )}
+
+                <button
+                    onClick={generatePrompt}
+                    disabled={loadingPrompt}
+                    style={{ marginTop: "10px" }}
+                >
+                    Regenerate Prompt
+                </button>
+                <div className="reflection">
+                    <form onSubmit={handleSave}>
+                        <ReflectionCard
+                            reflection={reflection}
+                            setReflection={setReflection}
+                            editMode={editMode}
+                            setEditMode={setEditMode}
+                            handleSave={handleSave}
+                        />
+                        {editMode && (
+                            <button className="reflection-btn" type="submit">{existingReflection ? "Save Changes" : "Save Reflection"}</button>
+                        )}
+                    </form></div>
+            </div>
+
+
 
             <div className="review">
                 <ReviewForm setContent={setContent} setRating={setRating} content={content} rating={rating} reviews={reviews} getReviews={getReviews} bookData={bookData} />
