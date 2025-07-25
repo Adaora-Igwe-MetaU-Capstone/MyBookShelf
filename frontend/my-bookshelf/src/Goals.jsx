@@ -29,7 +29,6 @@ function Goals() {
                 credentials: 'include'
             })
             const data = await res.json()
-            console.log(data)
             setAllGoals(data)
 
         } catch (err) {
