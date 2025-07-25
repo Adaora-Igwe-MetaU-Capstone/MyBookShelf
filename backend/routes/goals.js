@@ -51,21 +51,44 @@ router.get('/goal', async (req, res) => {
     }
 })
 
-
-//get goals for all users
 router.get('/goals', async (req, res) => {
+    const currentYear = new Date().getFullYear();
     const goals = await prisma.goal.findMany({
-        where: {
-            isPublic: true,
-        },
+        where: { isPublic: true },
         include: {
             user: {
-                select: { username: true }
+                select: { id: true, username: true }
             }
         }
-    })
-    res.json(goals)
-})
+    });
+    const goalsWithProgress = await Promise.all(goals.map(async (goal) => {
+        const readBookshelf = await prisma.bookshelf.findFirst({
+            where: {
+                name: 'Read',
+                userId: goal.userId
+            }
+        });
+        const booksRead = await prisma.book.findMany({
+            where: {
+                bookshelfId: readBookshelf.id,
+                createdAt: {
+                    gte: new Date(`${currentYear}-01-01T00:00:00.000Z`)
+                }
+
+            },
+        })
+        booksReadCount = booksRead.length;
+        const progress = goal.target > 0 ? Math.min(100, Math.round((booksRead.length / goal.target) * 100)) : 0;
+
+        return {
+            ...goal,
+            progress,
+            booksReadCount
+        };
+    }));
+    res.json(goalsWithProgress);
+});
+
 
 //get progress on goal
 router.get('/progress', async (req, res) => {

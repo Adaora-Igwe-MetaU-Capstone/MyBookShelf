@@ -40,19 +40,3 @@
 .details {
     margin-top: 80px;
 }
-
-/* @media (max-width: 480px) {
-    .book {
-        flex-direction: column;
-        width: 90%;
-        margin: 1rem auto;
-    }
-
-    .book-cover {
-        width: 100%;
-        max-width: none;
-        height: auto;
-        margin-right: 0;
-        margin-bottom: 1rem;/
-    }
-} */

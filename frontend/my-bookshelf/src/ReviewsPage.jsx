@@ -4,6 +4,7 @@ import { addToQueue } from "./utils/db"
 import { toast } from 'react-toastify';
 import StarRatingInput from "./StarRatingInput";
 import StarRatingDisplay from "./StarRatingDisplay";
+import './ReviewsPage.css'
 function ReviewsPage(props) {
     const [editMode, setEditMode] = useState(false)
     const [content, setContent] = useState()
@@ -73,12 +74,17 @@ function ReviewsPage(props) {
                 <p>No reviews yet</p>
             ) : (
                 props.reviews.map((review) => (
-                    <div>
-                        <strong>{review.user.username}</strong>
-                        <p>{review.content}</p>
-                        <StarRatingDisplay rating={review.rating} />
+                    <div className="user-review" key={review.id}>
+                        <div className="user-review-header">
+                            <img id="avatar" src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${review.user.username}`} alt="Profile avatar" />
+                            <strong>{review.user.username}</strong>
+                        </div>
+                        <div className="user-review-body">
+                            <StarRatingDisplay rating={review.rating} />
+                            <p>{review.content}</p>
+                        </div>
                         {review.user.username === user.user.username && !editMode && (
-                            <button onClick={handleEdit}>Edit</button>
+                            <button className="edit-review" onClick={handleEdit}><i class="fa-solid fa-pen"></i></button>
                         )}
                     </div>
                 ))
