@@ -9,6 +9,13 @@ function BookRecs(props) {
             )
             .join(' ');
     }
+    if (!props.bookRecs || props.bookRecs.length === 0) {
+        return (
+            <div className="book-recs-empty">
+                <h2>Add books to your shelf to view recommendations 📚</h2>
+            </div>
+        );
+    }
     return (
         <>
             <h1 className="book-category">Some books we think you'll like</h1>

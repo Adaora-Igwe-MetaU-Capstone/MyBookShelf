@@ -2,9 +2,11 @@ import { openDB } from "idb";
 import { toast } from 'react-toastify';
 const DB_NAME = "my-bookshelf";
 const STORE_NAME = 'homepageBooks';
+const SHELVES_STORE = 'shelves';
 const QUEUE_STORE = 'offlineQueue'
+const RECOMMEND_STORE = 'recommendations';
 export const initDB = async () => {
-    return openDB(DB_NAME, 1, {
+    return openDB(DB_NAME, 3, {
         upgrade(db) {
             if (!db.objectStoreNames.contains(STORE_NAME)) {
                 db.createObjectStore(STORE_NAME)
@@ -12,10 +14,45 @@ export const initDB = async () => {
             if (!db.objectStoreNames.contains(QUEUE_STORE)) {
                 db.createObjectStore(QUEUE_STORE, { autoIncrement: true })
             }
+            if (!db.objectStoreNames.contains(SHELVES_STORE)) {
+                db.createObjectStore(SHELVES_STORE);
+            }
+            if (!db.objectStoreNames.contains(RECOMMEND_STORE)) {
+                db.createObjectStore(RECOMMEND_STORE);
+            }
         }
     })
 
 }
+export async function saveBookshelvesData(data) {
+    const db = await initDB();
+    const tx = db.transaction(SHELVES_STORE, 'readwrite');
+    await tx.store.put(data, 'bookshelves');
+    await tx.done;
+}
+export async function getBookshelvesData() {
+    const db = await initDB();
+    const tx = db.transaction(SHELVES_STORE, 'readonly');
+    const data = await tx.store.get('bookshelves');
+    await tx.done;
+    return data || null;
+}
+
+export async function saveRecs(data) {
+    const db = await initDB();
+    const tx = db.transaction(RECOMMEND_STORE, 'readwrite');
+    await tx.store.put(data, 'recommendations');
+    await tx.done;
+}
+
+export async function getRecs() {
+    const db = await initDB();
+    const tx = db.transaction(RECOMMEND_STORE, 'readonly');
+    const data = await tx.store.get('recommendations');
+    await tx.done;
+    return data || null;
+}
+
 export const saveBookstoDB = async (books) => {
     const db = await initDB();
     await db.put(STORE_NAME, books, 'books');
@@ -66,9 +103,7 @@ export const syncQueue = async () => {
     const tx = db.transaction(QUEUE_STORE, 'readonly')
     const keys = await tx.store.getAllKeys()
     const actions = await tx.store.getAll()
-    console.log(actions)
     const deduplicatedActions = deduplicate(actions)
-    console.log(deduplicatedActions)
     for (let i = 0; i < deduplicatedActions.length; i++) {
         const action = deduplicatedActions[i]
         try {

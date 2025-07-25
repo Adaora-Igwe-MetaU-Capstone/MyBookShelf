@@ -13,6 +13,7 @@ import BookFlippingLoader from "./BookFlippingLoader";
 import BookRecs from "./BookRecs";
 import GenreBookList from "./GenreBookList";
 import SearchResults from "./SearchResults";
+import { saveRecs, getRecs } from './utils/db';
 function Home(props) {
     const [searchInput, setSearchInput] = useState("")
     const [searchResults, setSearchResults] = useState([])
@@ -32,16 +33,30 @@ function Home(props) {
         setSearchInput(() => e.target.value)
     }
     async function fetchRecs() {
-        try {
-            const url = `http://localhost:3000/recs`;
-            const response = await fetch(url, {
-                method: 'GET',
-                credentials: 'include'
-            });
-            const data = await response.json();
-            setBookRecs(data);
-        } catch (err) {
-            alert('Error fetching recommendations');
+        if (navigator.onLine) {
+            try {
+                const url = `http://localhost:3000/recs`;
+                const response = await fetch(url, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                setBookRecs(data);
+                saveRecs(data)
+            } catch (err) {
+                fallbackToCachedRecs();
+            }
+        } else {
+            fallbackToCachedRecs()
+        }
+
+    }
+    async function fallbackToCachedRecs() {
+        const cached = await getRecs();
+        if (cached) {
+            setBookRecs(cached);
+        } else {
+            setBookRecs([]);
         }
     }
     async function fetchGenreBooks() {

@@ -24,6 +24,7 @@ function Sidebar(props) {
                 <button onClick={viewGoalPage}>Goals</button>
                 <button className="logout-button" onClick={handleLogout}>Logout</button>
             </div>
+
         </>
     )
 }

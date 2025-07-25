@@ -19,7 +19,6 @@ function App() {
   const [currUser, setCurrUser] = useState("")
   const ProtectedHome = WithAuth(Home);
   const ProtectedBookshelf = WithAuth(BookShelf)
-
   useEffect(() => {
     fetch("http://localhost:3000/me", { credentials: "include" })
       .then((response) => response.json())

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import StarRatingDisplay from "./StarRatingDisplay";
-
+import { saveBookshelvesData, getBookshelvesData } from './utils/db';
 function BookShelf() {
     const [bookshelves, setBookshelves] = useState([])
     const navigate = useNavigate()
@@ -30,33 +30,47 @@ function BookShelf() {
     };
 
     async function fetchBookShelves() {
-        try {
-            const res = await fetch('http://localhost:3000/user-bookshelves', {
-                method: 'GET',
-                credentials: 'include'
-            });
-            const data = await res.json();
-            setBookshelves(data);
-            const allBooks = Object.values(data).flat();
-            const ratingsResults = await Promise.all(
-                allBooks.map(async (book) => {
-                    const ratingData = await fetchRatings(book.googleId);
-                    return { googleId: book.googleId, ...ratingData };
-                })
-            );
+        if (navigator.onLine) {
+            try {
+                const res = await fetch('http://localhost:3000/user-bookshelves', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const data = await res.json();
+                saveBookshelvesData(data);
+                setBookshelves(data);
+                const allBooks = Object.values(data).flat();
+                const ratingsResults = await Promise.all(
+                    allBooks.map(async (book) => {
+                        const ratingData = await fetchRatings(book.googleId);
+                        return { googleId: book.googleId, ...ratingData };
+                    })
+                );
 
-            const newRatingsMap = {};
-            ratingsResults.forEach(({ googleId, averageRating, ratingsCount }) => {
-                newRatingsMap[googleId] = { averageRating, ratingsCount };
-            });
+                const newRatingsMap = {};
+                ratingsResults.forEach(({ googleId, averageRating, ratingsCount }) => {
+                    newRatingsMap[googleId] = { averageRating, ratingsCount };
+                });
 
-            setRatingsMap(newRatingsMap);
+                setRatingsMap(newRatingsMap);
 
-        } catch (err) {
-            toast.error("Error fetching bookshelves", err);
+            } catch (err) {
+                toast.error("Error fetching bookshelves", err);
+            }
+        }
+        else {
+            fallbackToCache();
+        }
+
+    }
+    async function fallbackToCache() {
+        const cached = await getBookshelvesData();
+        if (cached) {
+            setBookshelves(cached);
+        } else {
+            setBookshelves({});
         }
     }
-
     const goBackHome = () => {
         navigate("/home")
     }
