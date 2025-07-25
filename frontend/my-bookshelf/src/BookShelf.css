@@ -101,49 +101,25 @@
     text-align: center;
     font-size: 1.5rem;
     margin: 0;
+
 }
 
-@media (max-width: 768px) {
-    .book-card {
-        flex-direction: column;
-        max-width: 100%;
-        margin-right: 0;
-        padding: 15px;
-    }
-
-    .book-card img {
-        width: 100%;
-        height: auto;
-        border-radius: 15px;
-        margin-bottom: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .book-card {
-        padding: 10px;
-    }
-
-    .header {
-        padding: 10px 15px;
-        height: auto;
-        font-size: 1.1rem;
-    }
-
-    #goBack {
-        font-size: 30px;
-        left: 10px;
-    }
-}
-
-@media (min-width: 700px) {
+@media (max-width: 700px) {
     .accordion-section {
-        max-width: 3000px;
         width: 100%;
+        max-width: 100%;
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
     }
 }
 
-.books {
-    max-width: 100%;
-    width: 100%;
+@media (max-width: 600px) {
+    .accordion-section {
+        width: 200px;
+        max-width: 100%;
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+    }
 }

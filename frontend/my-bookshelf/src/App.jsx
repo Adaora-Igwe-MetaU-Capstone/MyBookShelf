@@ -13,6 +13,7 @@ import { getQueue, initDB, syncQueue } from './utils/db'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Bounce } from 'react-toastify';
+import './index.css'
 function App() {
   const { user, setUser } = useUser()
   const [currUser, setCurrUser] = useState("")

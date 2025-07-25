@@ -17,7 +17,6 @@ async function generatePrompt({ title, authors, description }) {
             temperature: 0.7,
             maxOutputTokens: 256,
         });
-        // return response.text || "No prompt generated";
         const text = response.text || "No prompt generated";
         const splitPrompts = text.split(/\n?\s*\d+\.\s*/).filter(Boolean);
         return splitPrompts.length ? splitPrompts : [text];
